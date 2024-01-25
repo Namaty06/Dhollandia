@@ -18,8 +18,9 @@
                                         <th>Responsable</th>
                                         <th>Email</th>
                                         <th>Adresse</th>
-                                        <th>Tel</th>
+                                        <th>Télephone</th>
                                         <th>Fix</th>
+                                        <th>Detail</th>
                                         <th>Modifier</th>
                                         <th>Supprimer</th>
 
@@ -28,7 +29,7 @@
                                 <tbody>
                                     @forelse ($societes as $societe)
                                         <tr>
-                                            <td><img src="{{ asset('storage/'.$societe->logo) }}" style="width: 50%" class="img-fluid"
+                                            <td><img src="{{ asset('storage/'.$societe->logo) }}" style="width: 100px" class="img-fluid"
                                                     alt=""></td>
                                             <td>{{ $societe->societe ?? null }}</td>
                                             <td>{{ $societe->responsable ?? null }}</td>
@@ -36,13 +37,13 @@
                                             <td>{{ $societe->adresse ?? null }}</td>
                                             <td>{{ $societe->telephone ?? null }}</td>
                                             <td>{{ $societe->fix ?? null }}</td>
-                                            {{-- @can('viewAny', App\Models\Vehicule::class)
+                                            @can('viewAny', App\Models\Societe::class)
                                                 <td> <a class="btn btn-sm btn-info rounded-pill"
-                                                        href="{{ route('Vehicule.show', [$vehicule->id]) }}">
+                                                        href="{{ route('Societe.show', [$societe->id]) }}">
                                                         <i class="uil uil-eye fs-5"></i>
                                                     </a>
                                                 </td>
-                                            @endcan --}}
+                                            @endcan
 
                                             @can('update', App\Models\Societe::class)
                                                 <td> <a class="btn btn-sm btn-primary rounded-pill"

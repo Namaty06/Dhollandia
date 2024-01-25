@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('ref')->unique()->nullable();
             $table->foreignId('societe_id')->constrained()->onDelete(null);
-            $table->foreignId('vehicule_id')->constrained()->onDelete(null);
             $table->integer('intervention_chaque')->nullable();
             $table->date('date_debut');
             $table->date('date_fin');

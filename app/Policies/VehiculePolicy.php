@@ -13,7 +13,7 @@ class VehiculePolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_vehicules')) {
+        if ($user->hasRolePermission('naviguer_vehicules')) {
             return true;
         } else {
             return false;
@@ -26,7 +26,7 @@ class VehiculePolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_vehicules')) {
+        if ($user->hasRolePermission('ajouter_vehicules')) {
             return true;
         } else {
             return false;
@@ -38,7 +38,7 @@ class VehiculePolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_vehicules')) {
+        if ($user->hasRolePermission('modifier_vehicules')) {
             return true;
         } else {
             return false;
@@ -50,7 +50,7 @@ class VehiculePolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_vehicules')) {
+        if ($user->hasRolePermission('supprimer_vehicules')) {
             return true;
         } else {
             return false;
@@ -62,7 +62,7 @@ class VehiculePolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_vehicules')) {
+        if ($user->hasRolePermission('restaurer_vehicules')) {
             return true;
         } else {
             return false;

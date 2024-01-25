@@ -11,20 +11,27 @@ class Vehicule extends Model
     use HasFactory,SoftDeletes;
 
     protected $fillable =[
-        'numero_serie',
+
         'matricule',
         'typevehicule_id',
-        'marque',
-        'date_circulation',
-        'capacite',
-        'image',
-        'status_id',
-        'pdf'
+        'ville_id',
+        'societe_id',
+        'status_id'
     ];
+
+    public function societe()
+    {
+        return $this->belongsTo(Societe::class);
+    }
 
     public function typevehicule()
     {
         return $this->belongsTo(TypeVehicule::class);
+    }
+
+    public function ville()
+    {
+        return $this->belongsTo(Ville::class);
     }
 
     public function contrat()
@@ -37,9 +44,20 @@ class Vehicule extends Model
         return $this->hasMany(Reclamation::class);
     }
 
+    public function hayon()
+    {
+        return $this->hasOne(Hayon::class);
+    }
+
     public function status(){
         return $this->belongsTo(Status::class);
     }
+
+    public function contrats()
+    {
+        return $this->belongsToMany(Contrat::class,'vehicule_contrat');
+    }
+
 
     public function document()
     {

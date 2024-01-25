@@ -3,9 +3,9 @@
     <div class="row">
        <div class="page-title-box">
             <div class="page-title-left ">
-                <h2 class="text-dark my-2 mx-2">Intervention</h2>
+                <h2 class="text-dark my-2 mx-2">Intervention <span class="badge bg-warning">Préventif</span> </h2>
             </div>
-            <div class="page-title-right ">
+            <div class="page-title-right mb-2">
                 <a href="{{ route('Document.create', $interventionsContract->id) }}" class="mt-2 btn btn-outline-dark">Ajouter Document</a>
             </div>
         </div>
@@ -21,6 +21,7 @@
                                     <th>Vehicule</th>
                                     <th>Date</th>
                                     <th>Agent</th>
+                                    <th>Bon Travail</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -31,6 +32,7 @@
                                     <td>{{ $interventionsContract->interventionable->vehicule->matricule ?? null }}</td>
                                     <td>{{ $interventionsContract->date_intervention ?? null }}</td>
                                     <td>{{ $interventionsContract->user->name ?? null }}</td>
+                                    <td>{{ $intervention->bon_travail ?? null }}</td>
                                     <td> <span class="badge bg-{{ $interventionsContract->status->color }}">
                                             {{ $interventionsContract->status->status ?? null }}</span></td>
                                 </tr>
@@ -38,6 +40,65 @@
                         </table>
                     </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-dark">Sociéte</h3>
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sociéte</th>
+                                <th>Libelle</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img style="height: 150px; width:150px"
+                                        src="{{ asset('storage/' . $interventionsContract->interventionable->societe->logo) }}"
+                                        class="img-thumbnail" alt="">
+                                </td>
+                                <td>{{ $interventionsContract->interventionable->societe->societe }}</td>
+                                <td>{{ $interventionsContract->interventionable->societe->email }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-dark">Vehicule</h3>
+                    <table class="table table-striped">
+                        <thead>
+
+                            <tr>
+                                <th>Vehicule</th>
+                                <th>Matricule</th>
+                                <th>N serie</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img style="height: 150px; width:150px"
+                                        src="{{ asset('storage/' . $interventionsContract->interventionable->vehicule->image ?? null) }}"
+                                        class="img-thumbnail" alt=""></td>
+                                <td>{{ $interventionsContract->interventionable->vehicule->matricule ?? null }}</td>
+                                <td>{{ $interventionsContract->interventionable->vehicule->numero_serie ?? null }}</td>
+                                <td>{{ $interventionsContract->interventionable->vehicule->typevehicule->type ?? null }}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

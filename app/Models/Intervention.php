@@ -18,12 +18,25 @@ class Intervention extends Model
         'date_intervention',
         'lat',
         'lng',
-        'date_validation'
+        'date_validation',
+        'type_panne_id',
+        'bon_travail',
+        'hayon_id'
     ];
 
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function hayon()
+    {
+        return $this->belongsTo(Intervention::class);
+    }
+
+    public function typepanne()
+    {
+        return $this->belongsTo(TypePanne::class,'type_panne_id')->withTrashed();
     }
 
     public function question()
@@ -59,6 +72,11 @@ class Intervention extends Model
     public function interventionable()
     {
         return $this->morphTo();
+    }
+
+    public function observation()
+    {
+        return $this->hasMany(Observation::class);
     }
 
 }

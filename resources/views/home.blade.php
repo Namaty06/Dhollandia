@@ -111,7 +111,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        {{-- <div class="row">
             <div class="card">
                 <div class="card-body">
                     <div class="col-12 d-flex">
@@ -125,26 +125,17 @@
                             <canvas id="horibarchart">
                             </canvas>
                         </div>
-                        {{-- @elseif ($d =='d2') --}}
 
 
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        {{-- <div class="row">
-                            <div class="d-flex justify-content-center"> <!-- Added justify-content-center -->
-                                <div class="col-4">
-                                    <a class="btn" href="{{ route('Intervention.calendar') }}"> Calendar</a>
-                                    <input type="month" name="date" id="filter"
-                                        value="{{ $currentDate->format('Y-m') }}" class="form-control">
-                                </div>
-                            </div>
-                        </div> --}}
+
                         <div class="row">
                             <div class="year-month-selector">
                                 <button class="btn btn-primary mx-3" id="prevYear">Previous Year</button>
@@ -172,16 +163,25 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="text-dark my-2 mx-2"> Intervention</h2>
 
-
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th>Client</th>
-                                    <th>Contrat</th>
+                                    <th>Ref</th>
                                     <th>Vehicule</th>
+                                    <th>Sociéte</th>
                                     <th>Date</th>
-                                    <th>Agent</th>
+                                    <th>Technicien</th>
+                                    <th>Type Panne</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -189,13 +189,15 @@
                             <tbody>
                                 @foreach ($intervs as $item)
                                     <tr>
-                                        <td>{{ $item->contrat->societe->societe ?? 'null' }}</td>
-                                        <td>{{ $item->contrat->ref ?? 'null' }}</td>
-                                        <td>{{ $item->contrat->vehicule->matricule ?? 'null' }}</td>
-                                        <td>{{ $item->date_intervention ?? 'null' }}</td>
-                                        <td>{{ $item->user->name ?? 'null' }}</td>
+                                        <td>{{ $item->interventionable->ref ?? null }}</td>
+                                        <td>{{ $item->interventionable->vehicule->matricule ?? null }}</td>
+                                        <td>{{ $item->interventionable->societe->societe ?? null }}</td>
+                                        <td>{{ $item->date_intervention ?? null }}</td>
+                                        <td>{{ $item->user->name ?? null }}</td>
+                                        <td> <span class="badge bg-info">
+                                                {{ $item->typepanne->type ?? null }}</span></td>
                                         <td> <span class="badge bg-{{ $item->status->color }}">
-                                                {{ $item->status->status ?? 'null' }}</span></td>
+                                                {{ $item->status->status ?? null }}</span></td>
                                         <td>
                                             <a class="rounded-pill text-primary"
                                                 href="{{ route('interv.show', $item->id) }}">
@@ -212,13 +214,158 @@
         </div>
 
 
+
     </div>
     </div>
     </div>
 @endsection
 @section('script')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/dataTables.js/dataTables.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
 
+            const currentYearElement = document.getElementById("currentYear");
+            const prevYearButton = document.getElementById("prevYear");
+            const nextYearButton = document.getElementById("nextYear");
+            const monthSelector = document.getElementById("monthSelector");
+
+            let currentYear = new Date().getFullYear();
+            let currentMonth = new Date().getMonth();
+
+            // Update the UI with the initial year and month
+            currentYearElement.textContent = currentYear;
+            monthSelector.selectedIndex = currentMonth;
+
+            // Event listener for the "Previous Year" button
+            prevYearButton.addEventListener("click", function() {
+                currentYear--;
+                currentYearElement.textContent = currentYear;
+            });
+
+            // Event listener for the "Next Year" button
+            nextYearButton.addEventListener("click", function() {
+                currentYear++;
+                currentYearElement.textContent = currentYear;
+            });
+
+            // Event listener for the month selector
+            monthSelector.addEventListener("change", function() {
+                currentMonth = parseInt(monthSelector.value);
+
+                var dataTable = $('#myTable').DataTable();
+                dataTable.clear();
+                $.ajax({
+                    url: '/filter/Intervention',
+                    method: 'GET',
+                    data: {
+                        year: currentYear,
+                        month: currentMonth,
+
+                    },
+                    success: function(response) {
+                        var html = '';
+                        $.each(response, function(k, v) {
+                            console.log(v);
+                            html += "<tr>";
+                            html += "<td>" + v.interventionable.ref + "</td>";
+                            html += "<td>" + (v.interventionable.vehicule.matricule) +
+                                "</td>";
+
+                            html += "<td>" + v.interventionable.societe.societe +
+                                "</td>";
+
+                            html += "<td>" + (v.date_intervention != null ? v
+                                .date_intervention :
+                                ".") + "</td>";
+                            html += "<td>" + (v.user != null ? v.user.name :
+                                ".") + "</td>";
+                            html += "<td> <span class='badge bg-info' >" + (
+                                v.typepanne.type ? v.typepanne.type : ".") + "</td>";
+                            html += "<td> <span class='badge bg-" + v.status.color +
+                                "' >" + (
+                                    v.status.status ? v.status.status : ".") + "</td>";
+
+
+                            html +=
+                                "<td> <a class='rounded-pill text-primary' href='/show/Intervention/" +
+                                v.id + "'><i class='uil uil-eye fs-4'></i></td>";
+
+
+                            html += "</tr>";
+
+                        });
+
+                        dataTable.rows.add($(html)).draw(false);
+                    },
+                    error: function(error) {
+                        console.log('Error:', error);
+                    }
+                });
+
+            });
+        });
+
+        //////////////////////
+        var type = {!! json_encode($type) !!};
+        var nbrt = {!! json_encode($nbrt) !!};
+        var dossierCanvas = document.getElementById("typeChart");
+
+        var typeData = {
+            labels: type,
+            datasets: [{
+                data: nbrt,
+                backgroundColor: ['#F0B27A', '#D7DBDD', '#F1948A', '#F7DC6F',
+                    '#7DCEA0', '#73C6B6', '#CB4335', '#ECF0F1', '#784212', '#A6ACAF', '#D7BDE2', '#2C3E50'
+                ],
+                hoverBackgroundColor: ['#F0B27A', '#D7DBDD', '#F1948A', '#F7DC6F',
+                    '#7DCEA0', '#73C6B6', '#CB4335', '#ECF0F1', '#784212', '#A6ACAF', '#D7BDE2', '#2C3E50'
+                ],
+            }]
+        };
+        var typeChart = new Chart(dossierCanvas, {
+            type: 'doughnut',
+            data: typeData
+        });
+        ///////////////////////////////
+        var names = {!! json_encode($names) !!};
+        var nbrs = {!! json_encode($nbrs) !!};
+        var companiesCanvas = document.getElementById("horibarchart");
+        var barChartData1 = {
+            labels: names,
+            datasets: [{
+                fillColor: "#2c8ef8",
+                strokeColor: "#2c8ef8",
+                highlightFill: "#2c8ef8",
+                highlightStroke: "#2c8ef8",
+                backgroundColor: "#2c8ef8",
+                data: nbrs
+            }],
+            scaleGridLineColor: "#000"
+        }
+        var barChart = new Chart(companiesCanvas, {
+            type: 'bar',
+            data: barChartData1,
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Intermidiaires'
+                    }
+                }
+            },
+        })
+    </script>
 @endsection

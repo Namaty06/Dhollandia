@@ -4,9 +4,22 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body mt-1">
+
+                    <h3 class="mb-4">Contrat</h3>
+
                     <form action="{{ route('Contrat.store') }}" enctype="multipart/form-data" method="post">
                         @csrf
 
+                        <div class="form-group mb-3">
+                            <label for="ref">Réference *:</label>
+                            <input type="text" name="ref" value="{{ old('ref') }}" required
+                                class="form-control @error('ref') is-invalid @enderror">
+                            @error('ref')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
 
                         <div class="form-group mb-3">
                             <label for="societe">Sociéte *:</label>
@@ -16,22 +29,6 @@
                                 @endforeach
                             </select>
                             @error('societe')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="vehicule">Vehicule *:</label>
-                            <select class="form-select @error('vehicule') is-invalid @enderror" name="vehicule"
-                                id="vehicule">
-                                @foreach ($vehicules as $vehicule)
-                                    <option value="{{ $vehicule->id }}">{{ $vehicule->matricule }}</option>
-                                @endforeach
-                            </select>
-                            @error('vehicule')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -48,21 +45,34 @@
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="date_fin">Date Fin *:</label>
-                            <input type="date" name="date_fin" value="{{ old('date_fin') }}" required
-                                class="form-control @error('date_fin') is-invalid @enderror">
-                            @error('date_fin')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+
                         <div class="form-group mb-3">
                             <label for="intervention_chaque">Intervention Chaque en mois *:</label>
                             <input type="number" min="1" name="intervention_chaque" value="{{ old('intervention_chaque') }}" required
                                 class="form-control @error('intervention_chaque') is-invalid @enderror">
                             @error('intervention_chaque')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="periode">Periode *:</label>
+                            <input type="number" min="1" name="periode" value="{{ old('periode') }}" required
+                                class="form-control @error('periode') is-invalid @enderror">
+                            @error('periode')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="day">Jour *:</label>
+                            <input type="number" min="1" max="28" name="day" value="{{ old('day') }}" required
+                                class="form-control @error('day') is-invalid @enderror">
+                            @error('day')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

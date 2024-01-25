@@ -34,6 +34,8 @@ class UserController extends Controller
 
     public function show($id)
     {
+        $this->authorize('viewAny', User::class);
+
         $user = User::whereId($id)->firstOrFail();
         return redirect()->route('User.index')->with('success', 'Utilisateur Desactiver avec Succés');
     }
@@ -82,6 +84,8 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', User::class);
+
         $user = User::whereId($id)->with('role')->firstOrFail();
         $roles = Role::where('id', '!=', $user->role_id)->get();
 
@@ -109,7 +113,7 @@ class UserController extends Controller
         $user->telephone = $request->telephone;
 
         if ($request->password) {
-            $user->password = $request->password;
+            $user->password = Hash::make($request->password);
         }
 
         $user->update();
@@ -123,6 +127,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', User::class);
 
         $user = User::whereId($id)->firstOrFail();
         $user->delete();

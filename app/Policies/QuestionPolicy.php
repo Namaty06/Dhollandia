@@ -13,7 +13,7 @@ class QuestionPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_questions')) {
+        if ($user->hasRolePermission('naviguer_questions')) {
             return true;
         } else {
             return false;
@@ -27,7 +27,7 @@ class QuestionPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_questions')) {
+        if ($user->hasRolePermission('ajouter_questions')) {
             return true;
         } else {
             return false;
@@ -39,7 +39,7 @@ class QuestionPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_questions')) {
+        if ($user->hasRolePermission('modifier_questions')) {
             return true;
         } else {
             return false;
@@ -51,7 +51,7 @@ class QuestionPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_questions')) {
+        if ($user->hasRolePermission('supprimer_questions')) {
             return true;
         } else {
             return false;
@@ -63,7 +63,7 @@ class QuestionPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_questions')) {
+        if ($user->hasRolePermission('restaurer_questions')) {
             return true;
         } else {
             return false;

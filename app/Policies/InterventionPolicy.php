@@ -13,7 +13,7 @@ class InterventionPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_interventions')) {
+        if ($user->hasRolePermission('naviguer_interventions')) {
             return true;
         } else {
             return false;
@@ -27,7 +27,7 @@ class InterventionPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_interventions')) {
+        if ($user->hasRolePermission('ajouter_interventions')) {
             return true;
         } else {
             return false;
@@ -39,7 +39,7 @@ class InterventionPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_interventions')) {
+        if ($user->hasRolePermission('modifier_interventions')) {
             return true;
         } else {
             return false;
@@ -51,7 +51,7 @@ class InterventionPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_interventions')) {
+        if ($user->hasRolePermission('supprimer_interventions')) {
             return true;
         } else {
             return false;
@@ -63,7 +63,7 @@ class InterventionPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_interventions')) {
+        if ($user->hasRolePermission('restaurer_interventions')) {
             return true;
         } else {
             return false;

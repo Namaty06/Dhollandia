@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('numero_serie')->unique();
             $table->string('matricule')->nullable();
-            $table->string('marque')->nullable();
-            $table->date('date_circulation')->nullable();
+            // $table->string('marque')->nullable();
+            // $table->date('date_circulation')->nullable();
             $table->double('capacite')->nullable();
             $table->string('image')->nullable();
-            $table->boolean('status')->default(false);
+            // $table->boolean('status')->default(false);
             $table->foreignId('typevehicule_id')->constrained('type_vehicules')->onDelete(null);
             $table->softDeletes();
 

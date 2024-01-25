@@ -13,7 +13,7 @@ class ConfigurationPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_configurations')) {
+        if ($user->hasRolePermission('naviguer_configurations')) {
             return true;
         } else {
             return false;
@@ -25,7 +25,7 @@ class ConfigurationPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_configurations')) {
+        if ($user->hasRolePermission('ajouter_configurations')) {
             return true;
         } else {
             return false;
@@ -37,7 +37,7 @@ class ConfigurationPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_configurations')) {
+        if ($user->hasRolePermission('modifier_configurations')) {
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ class ConfigurationPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_configurations')) {
+        if ($user->hasRolePermission('supprimer_configurations')) {
             return true;
         } else {
             return false;
@@ -61,7 +61,7 @@ class ConfigurationPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_configurations')) {
+        if ($user->hasRolePermission('restaurer_configurations')) {
             return true;
         } else {
             return false;

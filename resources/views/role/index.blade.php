@@ -3,8 +3,25 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-12">
+                <div class="d-flex mb-2">
+                    <div class="col-3">
+                        @can('viewAny', App\Models\Role::class)
+                        <a href="{{ route('Role.create') }}" class="btn btn-primary">Créer</a>
+                        @endcan
+                    </div>
+                    <div class="col-6">
+                        <h3></h3>
+                    </div>
+                    <div class="col-3">
+                        @can('viewAny', App\Models\Role::class)
+                        <a href="{{ route('Role.deleted') }}" class="btn btn-warning">Restaurer</a>
+                        @endcan
+                    </div>
+
+                </div>
                 <div class="card">
                     <div class="card-body">
+
                         <div class="table-responsive">
                             <table class="table table-striped" class="display nowrap" id="myTable">
                                 <thead>
@@ -12,6 +29,7 @@
 
                                         <th>Role</th>
                                         <th>Permission</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -29,11 +47,11 @@
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="exampleModal{{ $role->id }}" tabindex="-1"
                                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog modal-lg">
+                                                        <div class="modal-dialog modal-xl">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                                        Permission</h1>
+                                                                        Permission pour {{ $role->role }}</h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
@@ -41,11 +59,13 @@
                                                                     @csrf
                                                                     <div class="modal-body">
                                                                         <div class="row">
-                                                                            <input type="hidden" name="role_id" value="{{ $role->id }}">
+                                                                            <input type="hidden" name="role_id"
+                                                                                value="{{ $role->id }}">
                                                                             @foreach ($permissions as $permission)
                                                                                 @if ($role->hasPermission($permission->permission))
                                                                                     <div class="col-md-3">
-                                                                                        <div class="form-check form-check-inline form-switch">
+                                                                                        <div
+                                                                                            class="form-check form-check-inline form-switch">
                                                                                             <input type="checkbox" checked
                                                                                                 class="form-check-input"
                                                                                                 value="{{ $permission->id }}"
@@ -76,7 +96,8 @@
                                                                     <div class="modal-footer ">
                                                                         <button type="button" class="btn btn-secondary"
                                                                             data-bs-dismiss="modal">Fermer</button>
-                                                                        <button type="submit" class="btn btn-primary"> Enregistrer
+                                                                        <button type="submit" class="btn btn-primary">
+                                                                            Enregistrer
                                                                         </button>
                                                                     </div>
                                                                 </form>
@@ -84,6 +105,16 @@
                                                         </div>
                                                     </div>
                                                 </td>
+                                            @endcan
+                                            @can('viewAny', App\Models\Role::class)
+                                            <td>
+                                                <form  action="{{ route('Role.destroy', $role->id) }}" method="POST" >
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"> <i
+                                                            class="uil uil-trash"></i> </button>
+                                                </form>
+                                            </td>
                                             @endcan
                                         </tr>
                                     @empty

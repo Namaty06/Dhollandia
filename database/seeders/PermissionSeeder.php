@@ -14,9 +14,9 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
 
-        Permission::generateFor('users');
+        Permission::generateFor('utilisateurs');
         Permission::generateFor('vehicules');
-        Permission::generateFor('typevehicules');
+        Permission::generateFor('hayons');
         // Permission::generateFor('roles');
         Permission::create([
             'permission'=>'gestion_role_permission'
@@ -26,14 +26,9 @@ class PermissionSeeder extends Seeder
         Permission::generateFor('interventions');
         Permission::generateFor('examens');
         Permission::generateFor('questions');
-        Permission::generateFor('configurations');
-        Permission::generateFor('rapports');
         Permission::generateFor('reclamations');
-        Permission::generateFor('typeintervetions');
-
-
-
-
+        Permission::generateFor('configurations');
+        Permission::generateFor('villes');
 
     }
 }

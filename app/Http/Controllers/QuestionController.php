@@ -28,6 +28,8 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Question::class);
+
         $request->validate([
             'question' => 'required',
             'examen' => 'required|exists:examens,id'
@@ -42,6 +44,7 @@ class QuestionController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Question::class);
 
         $question = Question::findOrFail($id);
         return view('question.edit', compact('question'));
@@ -57,6 +60,7 @@ class QuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('update', Question::class);
 
         $request->validate([
             'question' => 'required',
@@ -74,12 +78,12 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', Question::class);
 
-            $question = Question::findOrFail($id);
-            $question->delete();
+        $question = Question::findOrFail($id);
+        $question->delete();
 
-            return redirect()->route('Examen.index')->with('success', 'Question Supprimer avec Succés');
-
+        return redirect()->route('Examen.index')->with('success', 'Question Supprimer avec Succés');
     }
 
 
@@ -89,6 +93,8 @@ class QuestionController extends Controller
      */
     public function deleted()
     {
+        $this->authorize('restore', Question::class);
+
         $questions = Question::onlyTrashed()->get();
         return view('question.deleted', compact('questions'));
     }
@@ -99,10 +105,9 @@ class QuestionController extends Controller
      */
     public function restore($id)
     {
+        $this->authorize('restore', Question::class);
         $question = Question::withTrashed()->whereId($id)->firstOrFail();
         $question->restore();
         return redirect()->route('Examen.index')->with('success', 'Question Restaurer avec Succés');
     }
-
-
 }

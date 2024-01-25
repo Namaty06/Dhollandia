@@ -11,7 +11,7 @@ class ReclamationPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_reclamations')) {
+        if ($user->hasRolePermission('naviguer_reclamations')) {
             return true;
         } else {
             return false;
@@ -23,7 +23,7 @@ class ReclamationPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_reclamations')) {
+        if ($user->hasRolePermission('ajouter_reclamations')) {
             return true;
         } else {
             return false;
@@ -35,7 +35,7 @@ class ReclamationPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_reclamations')) {
+        if ($user->hasRolePermission('modifier_reclamations')) {
             return true;
         } else {
             return false;
@@ -47,7 +47,7 @@ class ReclamationPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_reclamations')) {
+        if ($user->hasRolePermission('supprimer_reclamations')) {
             return true;
         } else {
             return false;
@@ -59,7 +59,7 @@ class ReclamationPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_reclamations')) {
+        if ($user->hasRolePermission('restaurer_reclamations')) {
             return true;
         } else {
             return false;

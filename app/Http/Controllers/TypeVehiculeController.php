@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuration;
 use App\Models\TypeVehicule;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class TypeVehiculeController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', TypeVehicule::class);
+        $this->authorize('viewAny', Configuration::class);
 
         $types = TypeVehicule::all();
         return view('typevehicule.index', compact('types'));
@@ -25,6 +26,7 @@ class TypeVehiculeController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Configuration::class);
         return view('typevehicule.create');
     }
     /**
@@ -34,7 +36,7 @@ class TypeVehiculeController extends Controller
     public function store(Request $request)
     {
 
-        $this->authorize('create', TypeVehicule::class);
+        $this->authorize('create', Configuration::class);
 
         $request->validate([
             'type' => 'required|unique:type_vehicules,type'
@@ -52,6 +54,7 @@ class TypeVehiculeController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Configuration::class);
         $type = TypeVehicule::whereId($id)->first();
         return view('typevehicule.edit', compact('type'));
     }
@@ -64,7 +67,7 @@ class TypeVehiculeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->authorize('update', TypeVehicule::class);
+        $this->authorize('update', Configuration::class);
 
         $request->validate([
             'type' => 'required|unique:type_vehicules,type,' . $id
@@ -82,7 +85,7 @@ class TypeVehiculeController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('delete', TypeVehicule::class);
+        $this->authorize('delete', Configuration::class);
 
         $type = TypeVehicule::whereId($id)->firstOrFail();
         $type->delete();
@@ -93,7 +96,7 @@ class TypeVehiculeController extends Controller
      */
     public function deleted()
     {
-        $this->authorize('restore', TypeVehicule::class);
+        $this->authorize('restore', Configuration::class);
         $types = TypeVehicule::onlyTrashed()->get();
         return view('typevehicule.deleted', compact('types'));
     }
@@ -103,7 +106,7 @@ class TypeVehiculeController extends Controller
      */
     public function restore($id)
     {
-        $this->authorize('restore', TypeVehicule::class);
+        $this->authorize('restore', Configuration::class);
 
         $type = TypeVehicule::withTrashed()->whereId($id)->firstOrFail();
         $type->restore();

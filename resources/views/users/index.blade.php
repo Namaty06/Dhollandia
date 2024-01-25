@@ -5,13 +5,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <h3>Utilisateurs</h3>
+                        <div class="table-responsive mt-1">
                             <table class="table table-striped" class="display nowrap"  id="myTable">
                                 <thead>
                                     <tr>
                                         <th>Id</th>
                                         <th>Nom</th>
                                         <th>Email</th>
+                                        <th>Telephone</th>
                                         <th>Role</th>
                                         {{-- <th>Afficher</th> --}}
                                         <th>Modifier</th>
@@ -24,6 +26,8 @@
                                             <td>{{ $user->id }}</td>
                                             <td>{{ $user->name ?? null}}</td>
                                             <td>{{ $user->email ?? null}}</td>
+                                            <td>{{ $user->telephone ?? null}}</td>
+
                                             <td><span class="badge bg-info">{{ $user->role->role?? null }}</span></td>
                                             {{-- @can('view', App\Models\User::class)
                                             <td> <a class="btn btn-sm btn-info rounded-pill"

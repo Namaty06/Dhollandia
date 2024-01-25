@@ -15,12 +15,18 @@ class Reclamation extends Model
         'societe_id',
         'status_id',
         'vehicule_id',
-        'user_id'
+        'user_id',
+        'transport_id'
     ];
 
     public function vehicule()
     {
         return $this->belongsTo(Vehicule::class);
+    }
+
+    public function transport()
+    {
+        return $this->belongsTo(Vehicule::class,'transport_id');
     }
 
     public function societe()

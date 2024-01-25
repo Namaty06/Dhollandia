@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contrat;
 use App\Models\Societe;
 use App\Models\TypeDocument;
 use App\Models\TypeVehicule;
 use App\Models\Vehicule;
+use App\Models\Ville;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group Vehicule Management
@@ -22,7 +27,7 @@ class VehiculeController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Vehicule::class);
-        $vehicules = Vehicule::with('status')->get();
+        $vehicules = Vehicule::with('status', 'ville', 'societe')->get();
         return view('vehicule.index', compact('vehicules'));
     }
 
@@ -30,16 +35,47 @@ class VehiculeController extends Controller
     {
         $this->authorize('create', Vehicule::class);
         $types = TypeVehicule::all();
-        return view('vehicule.create', compact('types'));
+        $villes = Ville::all();
+        $societes = Societe::all();
+        return view('vehicule.create', compact('types', 'villes', 'societes'));
     }
+
 
     public function show($id)
     {
         $this->authorize('viewAny', Vehicule::class);
-        $types = TypeDocument::all();
-        $vehicule = Vehicule::whereId($id)->with('status','typevehicule')->first();
-        return view('vehicule.show',compact('vehicule','types'));
+        $typedocuments  = TypeDocument::all();
+        $vehicule = Vehicule::whereId($id)->with('status', 'typevehicule', 'societe', 'hayon')->first();
+
+        return view('vehicule.show', compact('vehicule', 'typedocuments'));
     }
+
+    public function detach(Request $request,$id)
+    {
+        $this->authorize('create', Contrat::class);
+
+        $vehicule = Vehicule::whereId($id)->firstOrFail();
+        $contrat = Contrat::whereId($request->contrat_id)->firstOrFail();
+        $vehicule->contrats()->detach($contrat);
+
+        return redirect()->back()->with('success', 'Vehicule a été Detacher du Contrat avec Succés');
+    }
+
+
+    public function attach(Request $request)
+    {
+        $this->authorize('create', Contrat::class);
+
+        $vehicule = Vehicule::whereId($request->vehicule_id)->firstOrFail();
+        $contrat = Contrat::whereId($request->contrat_id)->firstOrFail();
+        if($vehicule->societe_id != $contrat->societe_id){
+            return redirect()->back()->with('success', 'la vehicule et contrat ont pas le meme client');
+        }
+        $vehicule->contrats()->attach($contrat);
+
+        return redirect()->back()->with('success', 'Vehicule a été Detacher du Contrat avec Succés');
+    }
+
 
 
     /**
@@ -57,37 +93,25 @@ class VehiculeController extends Controller
         $this->authorize('create', Vehicule::class);
 
         $request->validate([
-            'numero_serie' => 'required|unique:vehicules,numero_serie',
             'matricule' => 'nullable|unique:vehicules,matricule',
             'typevehicule' => 'nullable|exists:type_vehicules,id',
-            'dmc' => 'nullable|date',
-            'pdf'=> 'nullable|mimes:pdf'
-            // 'image' => 'nullable|mimes:jpeg,png,jpg'
+            'societe' => 'nullable|exists:societes,id',
+            'ville' => 'required'
         ]);
 
-        $path = '';
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('images', 'public');
-        }
-        $file ='';
 
-        if ($request->hasFile('pdf')) {
-            $pdf = $request->file('pdf');
-
-            $file = $pdf->store('files', 'public');
-        }
 
         Vehicule::create([
-            'numero_serie' => $request->numero_serie,
+            // 'numero_serie' => $request->numero_serie,
             'typevehicule_id' => $request->typevehicule,
             'matricule' => $request->matricule,
-            'marque' => $request->marque,
-            'date_circulation' => $request->dmc,
-            'capacite' => $request->capacite,
-            'image' => $path,
-            'pdf'=>$file,
-            'status_id'=>5
+            // 'marque' => $request->marque,
+            // 'date_circulation' => $request->dmc,
+            // 'capacite' => $request->capacite,
+            'societe_id' => $request->societe,
+            'ville_id' => $request->ville,
+            // 'image' => $path,
+            'status_id' => 5
         ]);
 
         return redirect()->route('Vehicule.index')->with('success', 'Vehicule Créer avec Succés');
@@ -99,17 +123,76 @@ class VehiculeController extends Controller
         $this->authorize('update', Vehicule::class);
         $vehicule = Vehicule::whereId($id)->first();
         $types = TypeVehicule::all();
-        return view('vehicule.edit', compact('vehicule', 'types'));
+        $villes = Ville::all();
+        $societes = Societe::all();
+
+        return view('vehicule.edit', compact('vehicule', 'types', 'societes', 'villes'));
     }
 
-    public function view(Request $request, $id){
+    public function view(Request $request, $id)
+    {
 
-        
     }
 
-    public function upload(Request $request, $id){
+    public function upload(Request $request, $id)
+    {
+        $this->authorize('update', Vehicule::class);
+
+        $request->validate([
+            'type' => 'required'
+        ]);
+        $vehicule = Vehicule::whereId($id)->first();
+        $type = TypeDocument::whereId($request->type)->first();
 
 
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'type' => 'required',
+                'files' => 'required',
+                'files.*' => 'mimes:jpg,jpeg,png,pdf|required'
+            ],
+            [
+                'files.*.required' => 'Ce champ est Obligatoire',
+                'files.*.mimes' => 'Only jpg,jpeg,png,pdf are allowed',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator->messages());
+        }
+
+        if ($request->pdfs) {
+            $array = explode(",", $request->pdfs);
+            for ($i = 1; $i < count($array); $i += 2) {
+                $image = base64_decode($array[$i]);
+
+                $filename = uniqid() . '.' . 'png';
+                Storage::put('public/images/' . $filename, $image);
+
+                $vehicule->document()->create([
+                    'type_document_id' => $type->id,
+                    'path' => $filename
+                ]);
+            }
+        }
+
+        if ($request->file('files')) {
+            $files = $request->file('files');
+            foreach ($files as $file) {
+                if ($file->getMimeType() != 'application/pdf') {
+
+                    $filename = uniqid() . '.' . File::extension($file->getClientOriginalName());
+                    Storage::put('public/images/' . $filename, $file);
+                    $vehicule->document()->create([
+                        'type_document_id' => $type->id,
+                        'path' => $filename
+                    ]);
+                }
+            }
+        }
+        return redirect()->route('Vehicule.index')->with('success', 'Vehicule Modifier');
     }
 
 
@@ -131,34 +214,17 @@ class VehiculeController extends Controller
         $this->authorize('update', Vehicule::class);
 
         $request->validate([
-            'numero_serie' => 'required|unique:vehicules,numero_serie,' . $id,
             'matricule' => 'nullable|unique:vehicules,matricule,' . $id,
             'typevehicule' => 'nullable|exists:type_vehicules,id',
-            'dmc' => 'nullable|date',
-            'pdf'=> 'nullable|mimes:pdf'
+            'ville' => 'required',
+            'societe' => 'nullable|exists:societes,id',
+
         ]);
         $vehicule = Vehicule::whereId($id)->firstOrFail();
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('images', 'public');
-        } else {
-            $path = $vehicule->image;
-        }
-        if ($request->hasFile('pdf')) {
-            $pdf = $request->file('pdf');
-            $file = $pdf->store('files', 'public');
-        } else {
-            $file = $vehicule->pdf;
-        }
-        $vehicule->numero_serie = $request->numero_serie;
         $vehicule->typevehicule_id = $request->typevehicule;
         $vehicule->matricule = $request->matricule;
-        $vehicule->marque = $request->marque;
-        $vehicule->date_circulation = $request->dmc;
-        $vehicule->capacite = $request->capacite;
-        $vehicule->image = $path;
-        $vehicule->pdf = $file;
-
+        $vehicule->ville_id = $request->ville;
+        $vehicule->societe_id = $request->societe;
         $vehicule->update();
 
         return redirect()->route('Vehicule.index')->with('success', 'Vehicule Modifier avec Succés');
@@ -173,20 +239,20 @@ class VehiculeController extends Controller
     {
         $this->authorize('delete', Vehicule::class);
         $vehicule = Vehicule::whereId($id)->firstOrFail();
-        if ($vehicule->status == 1) {
-            return redirect()->route('Vehicule.index')->with('error', 'Vehicule en Travaille');
-        } else {
-            $vehicule->delete();
-            return redirect()->route('Vehicule.index')->with('success', 'Vehicule Supprimer avec Succés');
-        }
+        $vehicule->delete();
+         return redirect()->route('Vehicule.index')->with('success', 'Vehicule Supprimer avec Succés');
+
     }
 
     public function getvehicule($id)
     {
-        $societes = Societe::whereId($id)->with('contrat.vehicule')->first();
-        $vehicules=[];
-        foreach($societes->contrat as $contrat){
-            array_push($vehicules,$contrat->vehicule);
+        $societes = Societe::whereId($id)->with('contrat', function ($query) {
+            $query->where('status_id', 1);
+        })->first();
+
+        $vehicules = [];
+        foreach ($societes->contrat as $contrat) {
+            array_push($vehicules, $contrat->vehicule);
         }
         return response()->json($vehicules);
     }
@@ -278,27 +344,27 @@ class VehiculeController extends Controller
     //         }
 
     //         DB::beginTransaction();
-            // try {
-            //     $array = explode(",", $request->img);
-            //     foreach ($array as $key) {
-            //         $image = base64_decode($key);
-            //         $filename = uniqid() . '.' . 'png';
-            //         Storage::disk('s3')->put('documents/' . $dossier->ref . '/' . $type->type . '/' . $filename, $image);
-            //         $path = 'documents/' . $dossier->ref . '/' . $type->type . '/' . $filename;
+    // try {
+    //     $array = explode(",", $request->img);
+    //     foreach ($array as $key) {
+    //         $image = base64_decode($key);
+    //         $filename = uniqid() . '.' . 'png';
+    //         Storage::disk('s3')->put('documents/' . $dossier->ref . '/' . $type->type . '/' . $filename, $image);
+    //         $path = 'documents/' . $dossier->ref . '/' . $type->type . '/' . $filename;
 
-            //         Document::create([
-            //             'path' => $path,
-            //             'dossier_id' => $dossier->id,
-            //             'type_document_id' => $type->id
-            //         ]);
-            //     }
+    //         Document::create([
+    //             'path' => $path,
+    //             'dossier_id' => $dossier->id,
+    //             'type_document_id' => $type->id
+    //         ]);
+    //     }
 
-            //     DB::commit();
-            // } catch (\Exception $ex) {
-            //     DB::rollback();
-            //     return response()->json(['error' => $ex->getMessage()], 500);
-            // }
-            // return response()->json([
+    //     DB::commit();
+    // } catch (\Exception $ex) {
+    //     DB::rollback();
+    //     return response()->json(['error' => $ex->getMessage()], 500);
+    // }
+    // return response()->json([
     //             'status' => true,
     //             'message' => 'success'
     //         ], 200);

@@ -65,43 +65,10 @@
                                     </div>
                                 </li>
                                 <li class="side-nav-item">
-                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarvehicules"
-                                        aria-controls="sidebarvehicules" class="side-nav-link">
-                                        <i class="uil uil-users-alt"></i>
-                                        <span> Vehicule </span>
-                                        <span class="menu-arrow"></span>
-                                    </a>
-                                    <div class="collapse" id="sidebarvehicules">
-                                        <ul class="side-nav-second-level">
-                                            @can('viewAny', App\Models\Vehicule::class)
-                                                <li>
-                                                    <a href="{{ route('Vehicule.index') }}"> Liste</a>
-                                                </li>
-                                            @endcan
-                                            @can('viewAny', App\Models\TypeVehicule::class)
-                                                <li>
-                                                    <a href="{{ route('TypeVehicule.index') }}"> Type Vehicule</a>
-                                                </li>
-                                            @endcan
-                                            @can('create', App\Models\Vehicule::class)
-                                                <li>
-                                                    <a href="{{ route('Vehicule.create') }}">Créer</a>
-                                                </li>
-                                            @endcan
-                                            @can('restore', App\Models\Vehicule::class)
-                                                <li>
-                                                    <a href="{{ route('Vehicule.deleted') }}">Restaurer</a>
-                                                </li>
-                                            @endcan
-
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarsociete"
                                         aria-controls="sidebarsociete" class="side-nav-link">
-                                        <i class="uil uil-users-alt"></i>
-                                        <span> Sociéte </span>
+                                        <i class="uil uil-clapper-board"></i>
+                                        <span> Clients </span>
                                         <span class="menu-arrow"></span>
                                     </a>
                                     <div class="collapse" id="sidebarsociete">
@@ -126,9 +93,71 @@
                                     </div>
                                 </li>
                                 <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarvehicules"
+                                        aria-controls="sidebarvehicules" class="side-nav-link">
+                                        <i class="uil uil-car-sideview"></i>
+                                        <span> Vehicule </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarvehicules">
+                                        <ul class="side-nav-second-level">
+                                            @can('viewAny', App\Models\Vehicule::class)
+                                                <li>
+                                                    <a href="{{ route('Vehicule.index') }}"> Liste</a>
+                                                </li>
+                                            @endcan
+                                            @can('viewAny', App\Models\Configuration::class)
+                                                <li>
+                                                    <a href="{{ route('TypeVehicule.index') }}"> Type Vehicule</a>
+                                                </li>
+                                            @endcan
+                                            @can('create', App\Models\Vehicule::class)
+                                                <li>
+                                                    <a href="{{ route('Vehicule.create') }}">Créer</a>
+                                                </li>
+                                            @endcan
+                                            @can('restore', App\Models\Vehicule::class)
+                                                <li>
+                                                    <a href="{{ route('Vehicule.deleted') }}">Restaurer</a>
+                                                </li>
+                                            @endcan
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarhayon"
+                                        aria-controls="sidebarhayon" class="side-nav-link">
+                                        <i class="uil  uil-tachometer-fast"></i>
+                                        <span> Hayon </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarhayon">
+                                        <ul class="side-nav-second-level">
+                                            @can('viewAny', App\Models\Hayon::class)
+                                                <li>
+                                                    <a href="{{ route('Hayon.index') }}"> Liste</a>
+                                                </li>
+                                            @endcan
+                                            @can('create', App\Models\Hayon::class)
+                                                <li>
+                                                    <a href="{{ route('Hayon.create') }}">Créer</a>
+                                                </li>
+                                            @endcan
+                                            @can('restore', App\Models\Hayon::class)
+                                                <li>
+                                                    <a href="{{ route('Hayon.deleted') }}">Restaurer</a>
+                                                </li>
+                                            @endcan
+
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarquestion"
                                         aria-controls="sidebarquestion" class="side-nav-link">
-                                        <i class="uil uil-users-alt"></i>
+                                        <i class="uil uil-notes "></i>
                                         <span> Examen </span>
                                         <span class="menu-arrow"></span>
                                     </a>
@@ -157,7 +186,7 @@
                                 <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarrec"
                                         aria-controls="sidebarrec" class="side-nav-link">
-                                        <i class="uil uil-users-alt"></i>
+                                        <i class="uil uil-shield-check"></i>
                                         <span> Reclamation </span>
                                         <span class="menu-arrow"></span>
                                     </a>
@@ -173,11 +202,11 @@
                                                     <a href="{{ route('Reclamation.create') }}">Créer</a>
                                                 </li>
                                             @endcan
-                                            @can('restore', App\Models\Reclamation::class)
+                                            {{-- @can('restore', App\Models\Reclamation::class)
                                                 <li>
                                                     <a href="{{ route('Reclamation.deleted') }}">Restaurer</a>
                                                 </li>
-                                            @endcan
+                                            @endcan --}}
 
                                         </ul>
                                     </div>
@@ -186,7 +215,7 @@
                                 <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarcontrat"
                                         aria-controls="sidebarcontrat" class="side-nav-link">
-                                        <i class="uil uil-users-alt"></i>
+                                        <i class=" uil-calender"></i>
                                         <span> Contrat </span>
                                         <span class="menu-arrow"></span>
                                     </a>
@@ -202,15 +231,99 @@
                                                     <a href="{{ route('Contrat.create') }}">Créer</a>
                                                 </li>
                                             @endcan
-                                            @can('restore', App\Models\Contrat::class)
+                                            {{-- @can('restore', App\Models\Contrat::class)
                                                 <li>
                                                     <a href="{{ route('Contrat.deleted') }}">Restaurer</a>
+                                                </li>
+                                            @endcan --}}
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarintv"
+                                        aria-controls="sidebarintv" class="side-nav-link">
+                                        <i class=" uil-calender"></i>
+                                        <span> Intervention </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarintv">
+                                        <ul class="side-nav-second-level">
+                                            @can('viewAny', App\Models\Intervention::class)
+                                                <li>
+                                                    <a href="{{ route('Intervention.list') }}"> Liste</a>
+                                                </li>
+                                            @endcan
+                                            @can('create', App\Models\Intervention::class)
+                                                <li>
+                                                    <a href="{{ route('Intervention.create') }}">Créer</a>
+                                                </li>
+                                            @endcan
+                                            {{-- @can('restore', App\Models\Contrat::class)
+                                                <li>
+                                                    <a href="{{ route('Contrat.deleted') }}">Restaurer</a>
+                                                </li>
+                                            @endcan --}}
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarpanne"
+                                        aria-controls="sidebarpanne" class="side-nav-link">
+                                        <i class="uil uil-list-ul"></i>
+                                        <span> Types  </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarpanne">
+                                        <ul class="side-nav-second-level">
+                                            @can('viewAny', App\Models\Configuration::class)
+                                                <li>
+                                                    <a href="{{ route('TypePanne.index') }}"> Type de Panne</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="{{ route('TypeHayon.index') }}"> Type des Hayon</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="{{ route('TypeDocument.index') }}">Type des Document</a>
                                                 </li>
                                             @endcan
 
                                         </ul>
                                     </div>
                                 </li>
+
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebarville"
+                                        aria-controls="sidebarville" class="side-nav-link">
+                                        <i class="uil  uil-archway"></i>
+                                        <span> Ville </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarville">
+                                        <ul class="side-nav-second-level">
+                                            @can('viewAny', App\Models\Ville::class)
+                                                <li>
+                                                    <a href="{{ route('Ville.index') }}"> Liste</a>
+                                                </li>
+                                            @endcan
+                                            @can('create', App\Models\Ville::class)
+                                                <li>
+                                                    <a href="{{ route('Ville.create') }}">Créer</a>
+                                                </li>
+                                            @endcan
+                                            @can('restore', App\Models\Ville::class)
+                                                <li>
+                                                    <a href="{{ route('Ville.deleted') }}">Restaurer</a>
+                                                </li>
+                                            @endcan
+
+                                        </ul>
+                                    </div>
+                                </li>
+
 
                             </ul>
                             <!-- End Sidebar -->

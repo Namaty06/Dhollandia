@@ -9,39 +9,27 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-striped" class="display nowrap" id="myTable2">
+                            <table class="table table-striped " class="display nowrap " id="myTable2">
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>N Serie</th>
                                         <th>Matricule</th>
-                                        <th>Marque</th>
-                                        <th>DMC</th>
-                                        <th>Capacité</th>
+                                        <th>Ville</th>
+                                        <th>Sociéte</th>
                                         <th>Type</th>
-                                        <th>Status</th>
                                         <th>Afficher</th>
                                         <th>Modifier</th>
                                         <th>Supprimer</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="text-dark">
                                     @forelse ($vehicules as $vehicule)
                                         <tr>
-                                            <td>
-                                                <img src="{{ asset('storage/' . $vehicule->image) }}" class="img-fluid"
-                                                    alt=""></td>
-                                            <td>{{ $vehicule->numero_serie ?? null }}</td>
+
                                             <td>{{ $vehicule->matricule ?? null }}</td>
-                                            <td>{{ $vehicule->marque ?? null }}</td>
-                                            <td>{{ $vehicule->date_circulation ?? null }}</td>
-                                            <td>{{ $vehicule->capacite ?? null }}</td>
+                                            <td>{{ $vehicule->ville->ville ?? null}}</td>
+                                            <td>{{ $vehicule->societe->societe ?? null}}</td>
                                             <td>{{ $vehicule->typevehicule->type ?? null }}</td>
-                                            <td class="">
-                                                <span class="badge bg-{{ $vehicule->status->color ?? null }}">
-                                                    {{ $vehicule->status->status ?? null }}
-                                                </span>
-                                            </td>
+
 
 
                                             @can('viewAny', App\Models\Vehicule::class)

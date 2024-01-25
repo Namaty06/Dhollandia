@@ -4,11 +4,31 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body mt-1">
-                    <h3 class="text-dark"> Vehicule</h3>
+                    <h3 class="text-dark"> Vehicule :</h3>
 
                     <form action="{{ route('Vehicule.update', $vehicule->id) }}" enctype="multipart/form-data" method="post">
                         @method('PUT')
                         @csrf
+
+                        <div class="form-group mb-1">
+                            <label for="typevehicule">Client *:</label>
+                            <select class="form-select @error('societe') is-invalid @enderror" name="societe"
+                                id="societe">
+                                <option value="{{ $vehicule->societe->id }}">{{ $vehicule->societe->societe }}</option>
+                                @foreach ($societes as $societe)
+                                    @if ($societe->id != $vehicule->societe_id)
+                                    <option value="{{ $societe->id }}">{{ $societe->societe }}</option>
+
+                                    @endif
+                                @endforeach
+                            </select>
+                            @error('societe')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
+                        </div>
 
                         <div class="form-group mb-1">
                             <label for="numero_serie">Numero Serie *:</label>
@@ -32,7 +52,7 @@
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group mb-1">
+                        {{-- <div class="form-group mb-1">
                             <label for="marque">Marque *:</label>
                             <input type="marque" name="marque" value="{{ $vehicule->marque ?? null }}" required
                                 class="form-control @error('marque') is-invalid @enderror">
@@ -45,15 +65,15 @@
 
                         <div class="form-group mb-1">
                             <label for="dmc">DMC *:</label>
-                            <input type="date" name="dmc" value="{{ $vehicule->dmc ?? null }}" required
+                            <input type="date" name="dmc" value="{{ $vehicule->dmc }}" required
                                 class="form-control @error('dmc') is-invalid @enderror">
                             @error('dmc')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
-                        <div class="form-group mb-1">
+                        </div> --}}
+                        {{-- <div class="form-group mb-1">
                             <label for="capacite">Capacite *:</label>
                             <input type="number" name="capacite" value="{{ $vehicule->capacite ?? null }}" required
                                 class="form-control @error('capacite') is-invalid @enderror">
@@ -62,7 +82,7 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
+                        </div> --}}
                         <div class="form-group mb-1">
                             <label for="typevehicule">Type *:</label>
                             <select class="form-select @error('typevehicule') is-invalid @enderror" name="typevehicule"
@@ -70,7 +90,9 @@
                                 <option value="{{ $vehicule->typevehicule->id ?? null }}">
                                     {{ $vehicule->typevehicule->type ?? null }}</option>
                                 @foreach ($types as $typevehicule)
-                                    <option value="{{ $typevehicule->id }}">{{ $typevehicule->type }}</option>
+                                    @if ($typevehicule->id != $vehicule->typevehicule->id)
+                                        <option value="{{ $typevehicule->id }}">{{ $typevehicule->type }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                             @error('typevehicule')
@@ -81,6 +103,24 @@
 
                         </div>
                         <div class="form-group mb-1">
+                            <label for="typevehicule">Ville *:</label>
+                            <select class="form-select @error('ville') is-invalid @enderror" name="ville" id="ville">
+                                <option value="{{ $vehicule->ville->id }}">{{ $vehicule->ville->ville }}</option>
+
+                                @foreach ($villes as $ville)
+                                    @if ($ville->id != $vehicule->ville_id)
+                                        <option value="{{ $ville->id }}">{{ $ville->ville }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            @error('ville')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
+                        </div>
+                        {{-- <div class="form-group mb-1">
                             <label for="capacite">Image *:</label>
                             <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
                             @error('image')
@@ -88,32 +128,27 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+                        </div> --}}
+
+
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Modifier</button>
                         </div>
-                        <div class="form-group mb-1">
-                            <label for="capacite">Fichier PDF :</label>
-                            <input type="file" name="pdf" class="form-control @error('pdf') is-invalid @enderror">
-                            @error('pdf')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-
-
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Créer</button>
-                </div>
-                </form>
+
             </div>
         </div>
+
+    </div>
+    <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body mt-1">
-
-                    <form action="{{ route('Vehicule.upload') }}" id="myForm" method="post" class=" mt-2 "
-                        enctype="multipart/form-data">
+                    <h3 class="text-dark"> Document :</h3>
+                    <form action="{{ route('Vehicule.upload', $vehicule->id) }}" id="myForm" method="post"
+                        class=" mt-2 " enctype="multipart/form-data">
                         @csrf
                         <div class="row mt-2">
                             <div class="mb-3 col-md-4">
@@ -143,7 +178,9 @@
                             </div>
 
                             <div class="row">
-                                <button type="submit" id="btn" class="btn btn-info mt-3">Uploader</button>
+                                <div class="col-md-3">
+                                    <button type="submit" id="btn" class="btn btn-info mt-3">Uploader</button>
+                                </div>
                             </div>
 
                     </form>
@@ -151,56 +188,56 @@
             </div>
         </div>
     </div>
-    </div>
 @endsection
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.228/pdf.min.js"></script>
-<script>
- 
-    var table = [];
+@section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.228/pdf.min.js"></script>
+    <script>
+        var table = [];
 
-    function onUpload(files) {
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.type === 'application/pdf') {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const data = atob(e.target.result.replace(/.*base64,/, ''));
-                    renderPDF(data);
+        function onUpload(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type === 'application/pdf') {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        const data = atob(e.target.result.replace(/.*base64,/, ''));
+                        renderPDF(data);
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
             }
         }
-    }
 
-    async function renderPDF(data) {
-        const pdf = await pdfjsLib.getDocument({
-            data
-        }).promise;
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const image = document.createElement('img');
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({
-                scale: 2
-            });
-            const canvas = document.createElement('canvas');
-            const canvasContext = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            await page.render({
-                canvasContext,
-                viewport
+        async function renderPDF(data) {
+            const pdf = await pdfjsLib.getDocument({
+                data
             }).promise;
-            const dataUrl = canvas.toDataURL('image/png');
-            image.src = dataUrl;
-            image.classList.add('img');
-            table.push(dataUrl);
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const image = document.createElement('img');
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({
+                    scale: 2
+                });
+                const canvas = document.createElement('canvas');
+                const canvasContext = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                await page.render({
+                    canvasContext,
+                    viewport
+                }).promise;
+                const dataUrl = canvas.toDataURL('image/png');
+                image.src = dataUrl;
+                image.classList.add('img');
+                table.push(dataUrl);
+            }
+            const btn = document.getElementById('btn');
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const input = document.getElementById('pdf');
+                input.value = JSON.stringify(table);
+                document.getElementById('myForm').submit();
+            });
         }
-        const btn = document.getElementById('btn');
-        btn.addEventListener('click', e => {
-            e.preventDefault();
-            const input = document.getElementById('pdf');
-            input.value = JSON.stringify(table);
-            document.getElementById('myForm').submit();
-        });
-    }
-</script>
+    </script>
+@endsection

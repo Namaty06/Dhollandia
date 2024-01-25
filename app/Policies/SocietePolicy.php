@@ -13,7 +13,7 @@ class SocietePolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_societes')) {
+        if ($user->hasRolePermission('naviguer_societes')) {
             return true;
         } else {
             return false;
@@ -25,7 +25,7 @@ class SocietePolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_societes')) {
+        if ($user->hasRolePermission('ajouter_societes')) {
             return true;
         } else {
             return false;
@@ -37,7 +37,7 @@ class SocietePolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_societes')) {
+        if ($user->hasRolePermission('modifier_societes')) {
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ class SocietePolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_societes')) {
+        if ($user->hasRolePermission('supprimer_societes')) {
             return true;
         } else {
             return false;
@@ -61,7 +61,7 @@ class SocietePolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_societes')) {
+        if ($user->hasRolePermission('restaurer_societes')) {
             return true;
         } else {
             return false;

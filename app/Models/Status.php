@@ -34,4 +34,9 @@ class Status extends Model
         return $this->hasMany(Vehicule::class);
     }
 
+    public function hayon()
+    {
+        return $this->hasMany(Hayon::class);
+    }
+
 }

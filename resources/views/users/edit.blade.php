@@ -4,7 +4,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body mt-1">
-                    <form action="{{ route('User.store') }}" method="post">
+                    <form action="{{ route('User.update',$user->id) }}" method="post">
+                        @method('PUT')
                         @csrf
 
 
@@ -31,8 +32,8 @@
                             @enderror
                         </div>
                         <div class="form-group mb-1">
-                            <label for="password">Mot de Passe *:</label>
-                            <input type="password" name="password" required
+                            <label for="password">Mot de Passe :</label>
+                            <input type="password" name="password" 
                                 class="form-control @error('password') is-invalid @enderror">
                             @error('password')
                                 <span class="invalid-feedback" role="alert">

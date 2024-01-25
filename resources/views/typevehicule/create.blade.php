@@ -8,7 +8,7 @@
                         @csrf
 
                         <div class="form-group mb-1">
-                            <label for="type">Type *:</label>
+                            <label for="type">Type Vehicule *:</label>
                             <input type="text" name="type" value="{{ old('type') }}" required
                                 class="form-control @error('type') is-invalid @enderror">
                             @error('type')

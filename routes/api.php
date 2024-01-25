@@ -40,10 +40,14 @@ Route::post('/login', [AuthController::class, 'auth']);
 Route::middleware('auth:sanctum')->group(function() {
 
 Route::get('/Intervention/{year}', [ApiController::class, 'intervention']);
+Route::get('/All', [ApiController::class, 'list']);
+
 // Route::get('/Intervention/{year}', [InterventionController::class, 'index']);
 Route::get('/Examen', [ApiController::class, 'examens']);
 Route::put('/Rapport/{id}', [ApiController::class, 'updateContrat']);
 Route::put('Intervention/Cloturer/{id}', [ApiController::class, 'updateRec']);
+Route::put('token/update', [ApiController::class, 'updatetoken']);
+
 Route::post('/logout', [AuthController::class, 'logout']);
 
 });

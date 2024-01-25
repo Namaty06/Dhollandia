@@ -36,7 +36,8 @@ class HomeController extends Controller
             ->whereYear('date_intervention', $currentDate->year)->count();
         $count = Contrat::whereDate('date_fin', '>', $currentDate)->count();
         $intervs = Intervention::whereMonth('date_intervention', $currentDate->month)
-            ->whereYear('date_intervention', $currentDate->year)->with('user', 'contrat.societe')->orderBy('date_intervention')->get();
+            ->whereYear('date_intervention', $currentDate->year)->with('user','interventionable')->orderBy('date_intervention')->get();
+
         $query = 'SELECT u.status, COUNT(s.status_id) as nbr
             FROM interventions s
             JOIN statuses u ON s.status_id = u.id
@@ -66,6 +67,6 @@ class HomeController extends Controller
 
         // dd($type);
 
-        return view('home', compact('intervnontraiter', 'count', 'intervcloturer', 'intervannuler', 'intervs', 'currentDate', 'nbrt', 'type','names','nbrs'));
+        return view('home', compact('intervnontraiter', 'count', 'intervcloturer', 'intervannuler', 'intervs', 'currentDate', 'nbrt', 'type', 'names', 'nbrs'));
     }
 }

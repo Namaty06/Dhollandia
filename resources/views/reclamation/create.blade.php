@@ -11,13 +11,13 @@
 
                         <div class="form-group mb-1">
                             <label for="societe">Sociéte *:</label>
-                            <select class="form-select @error('societe') is-invalid @enderror" name="societe_id"
+                            <select class="form-select @error('societe_id') is-invalid @enderror" name="societe_id"
                                 id="societe">
                                 @foreach ($societes as $societe)
                                     <option value="{{ $societe->id }}">{{ $societe->societe }}</option>
                                 @endforeach
                             </select>
-                            @error('societe')
+                            @error('societe_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -26,13 +26,13 @@
                         </div>
                         <div class="form-group mb-1">
                             <label for="vehicule">Vehicules *:</label>
-                            <select class="form-select @error('vehicule') is-invalid @enderror" name="vehicule_id"
+                            <select class="form-select @error('vehicule_id') is-invalid @enderror" name="vehicule_id"
                                 id="vehicule">
-                                @foreach ($vehicules as $vehicule)
-                                    <option value="{{ $vehicule->id }}">{{ $vehicule->type }}</option>
-                                @endforeach
+                                {{-- @foreach ($vehicules as $vehicule)
+                                    <option value="{{ $vehicule->id }}">{{ $vehicule->matricule ?? null }}</option>
+                                @endforeach --}}
                             </select>
-                            @error('vehicule')
+                            @error('vehicule_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -43,12 +43,12 @@
 
                         <div class="form-group mb-1">
                             <label for="user">Technicien *:</label>
-                            <select class="form-select @error('user') is-invalid @enderror" name="user_id" id="user">
+                            <select class="form-select @error('user_id') is-invalid @enderror" name="user_id" id="user">
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
-                            @error('user')
+                            @error('user_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -56,6 +56,44 @@
 
                         </div>
 
+                        <div class="form-group mb-1">
+                            <label for="type_panne_id">Type de Panne *:</label>
+                            <select class="form-select @error('type_panne_id') is-invalid @enderror" name="type_panne_id" id="type_panne_id">
+                                @foreach ($types as $type)
+                                    <option value="{{ $type->id ?? null }}">{{ $type->type ?? null }}</option>
+                                @endforeach
+                            </select>
+                            @error('type_panne_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="type">Bon Travail :</label>
+                            <input type="text" name="bontravail" value="{{ old('bontravail') }}"
+                                class="form-control @error('bontravail') is-invalid @enderror">
+                            @error('bontravail')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="transport_id">Vehicule Transport *:</label>
+                            <select class="form-select @error('transport_id') is-invalid @enderror" name="transport_id" id="transport_id">
+                                @foreach ($nosvehicule as $v)
+                                    <option value="{{ $v->id }}">{{ $v->matricule ?? null }}</option>
+                                @endforeach
+                            </select>
+                            @error('transport_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+
+                        </div>
 
 
 

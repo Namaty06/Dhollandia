@@ -13,7 +13,7 @@ class ExamenPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_examens')) {
+        if ($user->hasRolePermission('naviguer_examens')) {
             return true;
         } else {
             return false;
@@ -24,7 +24,7 @@ class ExamenPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_examens')) {
+        if ($user->hasRolePermission('ajouter_examens')) {
             return true;
         } else {
             return false;
@@ -36,7 +36,7 @@ class ExamenPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_examens')) {
+        if ($user->hasRolePermission('modifier_examens')) {
             return true;
         } else {
             return false;
@@ -48,7 +48,7 @@ class ExamenPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_examens')) {
+        if ($user->hasRolePermission('supprimer_examens')) {
             return true;
         } else {
             return false;
@@ -60,7 +60,7 @@ class ExamenPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_examens')) {
+        if ($user->hasRolePermission('restaurer_examens')) {
             return true;
         } else {
             return false;

@@ -29,8 +29,10 @@
                                             <td>{{ $reclamation->societe->societe ?? null }}</td>
                                             <td>{{ $reclamation->vehicule->matricule ?? null }}</td>
                                             <td>{{ $reclamation->user->name ?? null }}</td>
+                                            {{-- <td>{{ $reclamation->interventionable->typepanne->type ?? null }}</td> --}}
+
                                             <td>
-                                                <span class="badge bg-{{ $reclamation->status->color ?? null }}">
+                                                <span class="badge bg-primary">
                                                     {{ $reclamation->status->status ?? null }}
                                                 </span>
                                             </td>

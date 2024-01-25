@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contrat;
 use App\Models\Societe;
 use App\Models\Vehicule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContratController extends Controller
@@ -15,15 +16,27 @@ class ContratController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Contrat::class);
-        $contrats = Contrat::with('societe','vehicule')->get();
-        return view('contrat.index',compact('contrats'));
+        $contrats = Contrat::with('societe', 'vehicule')->get();
+        return view('contrat.index', compact('contrats'));
     }
 
-    public function create(){
+    public function create()
+    {
+        $this->authorize('create', Contrat::class);
 
-        $societes = Societe::all();
+        $societes = Societe::get();
         $vehicules = Vehicule::get();
-        return view('contrat.create',compact('societes','vehicules'));
+        return view('contrat.create', compact('societes', 'vehicules'));
+    }
+
+    public function show($id)
+    {
+        $this->authorize('viewAny', Contrat::class);
+        $contrat = Contrat::whereId($id)->with('interventions', 'societe', 'vehicule', 'vehicules.hayon')->first();
+        $vehicules = Vehicule::where('societe_id', $contrat->societe_id)->get();
+
+        // dd($contrat);
+        return view('contrat.show', compact('contrat', 'vehicules'));
     }
 
     /**
@@ -40,32 +53,31 @@ class ContratController extends Controller
     {
         $this->authorize('create', Contrat::class);
 
-            $request->validate([
-                'societe' => 'required|exists:societes,id',
-                'vehicule' => 'required|exists:vehicules,id',
-                'intervention_chaque' => 'integer|required',
-                'date_debut' => 'required|date',
-                'date_fin' => 'required|date',
-            ]);
-            // $vehicule = Vehicule::whereId($request->vehicule)->firstOrFail();
-            // if($vehicule->status == 1){
+        $request->validate([
+            'ref' => 'required|unique:contrats,ref',
+            'societe' => 'required|exists:societes,id',
+            'intervention_chaque' => 'integer|required',
+            'date_debut' => 'required|date',
+            'day'=>'required|numeric|max:28',
+            'periode'=>'required|numeric|min:1'
+        ]);
 
-            //     return redirect()->back()->with('error','Vehicule déja Reserver');
+        $inputDate = $request->date_debut;
+        $carbonDate = Carbon::parse($inputDate);
+        $newDate = $carbonDate->addYears($request->periode);
 
-            // }
-            $contrat = Contrat::create([
-                'societe_id' => $request->societe,
-                'vehicule_id' => $request->vehicule,
-                'intervention_chaque' => $request->intervention_chaque,
-                'date_debut' => $request->date_debut,
-                'date_fin' => $request->date_fin,
-                'status_id' => 1
-            ]);
+        Contrat::create([
+            'ref' => $request->ref,
+            'societe_id' => $request->societe,
+            'intervention_chaque' => $request->intervention_chaque,
+            'date_debut' => $request->date_debut,
+            'date_fin' => $newDate,
+            'status_id' => 1,
+            'periode' => $request->periode,
+            'day' => $request->day
+        ]);
 
-            $contrat->ref =  $contrat->id.date('m').'/'.date('Y');
-            $contrat->update();
-
-            return redirect()->route('Contrat.index')->with('success','Contrat Creer avec Succés');
+        return redirect()->route('Contrat.index')->with('success', 'Contrat Créer avec Succés');
 
     }
 
@@ -83,9 +95,9 @@ class ContratController extends Controller
             $this->authorize('update', Contrat::class);
 
             $request->validate([
-                'societe_id' => 'required',
-                'vehicule_id' => 'required',
-                'status_id'=>'required'
+                'societe' => 'required|exists:societes,id',
+                'vehicule' => 'required|exists:vehicules,id',
+                'status_id' => 'required'
             ]);
 
             $contrat = Contrat::whereId($id)->firstOrFail();
@@ -112,21 +124,21 @@ class ContratController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $this->authorize('delete', Contrat::class);
+        // try {
+        //     $this->authorize('delete', Contrat::class);
 
-            $contrat = Contrat::whereId($id)->firstOrFail();
-            $contrat->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Successfuly'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        //     $contrat = Contrat::whereId($id)->firstOrFail();
+        //     $contrat->delete();
+        //     return response()->json([
+        //         'status' => true,
+        //         'message' => 'Successfuly'
+        //     ], 200);
+        // } catch (\Throwable $th) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => $th->getMessage()
+        //     ], 500);
+        // }
     }
     /**
      * Remove the specified resource from storage.

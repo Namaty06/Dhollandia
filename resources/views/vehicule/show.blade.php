@@ -16,8 +16,8 @@
                                         <th>Image</th>
                                         <th>N Serie</th>
                                         <th>Matricule</th>
-                                        <th>Marque</th>
-                                        <th>DMC</th>
+                                        <th>Societé</th>
+                                        <th>Ville</th>
                                         <th>Capacité</th>
                                         <th>Type</th>
                                         <th>Status</th>
@@ -26,45 +26,45 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        <tr>
-                                            <td>
-                                                <img style="width: 300px" src="{{ asset('storage/' . $vehicule->image) }}" class="img-fluid"
-                                                    alt=""></td>
-                                            <td>{{ $vehicule->numero_serie ?? null }}</td>
-                                            <td>{{ $vehicule->matricule ?? null }}</td>
-                                            <td>{{ $vehicule->marque ?? null }}</td>
-                                            <td>{{ $vehicule->date_circulation ?? null }}</td>
-                                            <td>{{ $vehicule->capacite ?? null }}</td>
-                                            <td>{{ $vehicule->typevehicule->type ?? null }}</td>
-                                            <td class="">
-                                                <span class="badge bg-{{ $vehicule->status->color ?? null }}">
-                                                    {{ $vehicule->status->status ?? null }}
-                                                </span>
+                                    <tr>
+                                        <td>
+                                            <img style="width: 300px" src="{{ asset('storage/' . $vehicule->image) }}"
+                                                class="img-fluid" alt="">
+                                        </td>
+                                        <td>{{ $vehicule->numero_serie ?? null }}</td>
+                                        <td>{{ $vehicule->matricule ?? null }}</td>
+                                        <td>{{ $vehicule->societe->societe ?? null }}</td>
+                                        <td>{{ $vehicule->ville->ville ?? null }}</td>
+                                        <td>{{ $vehicule->capacite ?? null }}</td>
+                                        <td>{{ $vehicule->typevehicule->type ?? null }}</td>
+                                        <td class="">
+                                            <span class="badge bg-{{ $vehicule->status->color ?? null }}">
+                                                {{ $vehicule->status->status ?? null }}
+                                            </span>
+                                        </td>
+
+                                        @can('update', App\Models\Vehicule::class)
+                                            <td> <a class="btn btn-sm btn-primary rounded-pill"
+                                                    href="{{ route('Vehicule.edit', [$vehicule->id]) }}">
+                                                    <i class="uil uil-pen fs-5"></i>
+                                                </a>
                                             </td>
+                                        @endcan
+                                        @can('delete', App\Models\Vehicule::class)
+                                            <td>
 
-                                            @can('update', App\Models\Vehicule::class)
-                                                <td> <a class="btn btn-sm btn-primary rounded-pill"
-                                                        href="{{ route('Vehicule.edit', [$vehicule->id]) }}">
-                                                        <i class="uil uil-pen fs-5"></i>
-                                                    </a>
-                                                </td>
-                                            @endcan
-                                            @can('delete', App\Models\Vehicule::class)
-                                                <td>
+                                                <form action="{{ route('Vehicule.destroy', [$vehicule->id]) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger rounded-pill" type="submit">
+                                                        <i class="uil uil-trash fs-5"></i>
+                                                    </button>
+                                                </form>
 
-                                                    <form action="{{ route('Vehicule.destroy', [$vehicule->id]) }}"
-                                                        method="post">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-sm btn-danger rounded-pill" type="submit">
-                                                            <i class="uil uil-trash fs-5"></i>
-                                                        </button>
-                                                    </form>
+                                            </td>
+                                        @endcan
 
-                                                </td>
-                                            @endcan
-
-                                        </tr>
+                                    </tr>
 
                                 </tbody>
                             </table>
@@ -74,15 +74,16 @@
 
             </div>
             @if ($vehicule->pdf)
-
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>Fiche Vehicule :</h3>
-                        <iframe style="width: 100%; height:950px" src="{{ asset('storage/' . $vehicule->pdf) }}" frameborder="0"></iframe>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>Fiche Vehicule :</h3>
+                            <iframe style="width: 100%; height:950px" src="{{ asset('storage/' . $vehicule->pdf) }}"
+                                frameborder="0"></iframe>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
             <div class="col-md-6">
                 <div class="card">
                     <div class="">
@@ -125,8 +126,62 @@
                     </div>
                 </div>
             </div>
+            @if ($vehicule->hayon)
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>Hayon</h3>
+                            <div class="table-responsive">
+                                <table class="table " class="display nowrap" id="">
+
+                                <thead>
+                                    <tr>
+                                        <th>Num Serie</th>
+                                        <th>Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ $vehicule->hayon->serie ?? null }}</td>
+                                        <td>{{ $vehicule->hayon->typehayon->type ?? null }}</td>
+                                        @can('update', App\Models\Hayon::class)@endcan
+                                        <td> <a class="btn btn-sm btn-primary rounded-pill"
+                                                href="{{ route('Hayon.edit', [$vehicule->hayon->id]) }}">
+                                                <i class="uil uil-pen fs-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endif
 
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        var $mediaElements = $('.media');
+
+        $('.link').click(function(e) {
+            e.preventDefault();
+
+            // get the category from the data attribute
+            var filterVal = $(this).data('filter');
+            console.log(filterVal);
+
+            var type_id = this.value;
+
+            if (filterVal === 'ALL') {
+                $mediaElements.show();
+            } else {
+                // hide all then filter the ones to show
+                $mediaElements.hide().filter('[data-category="' + filterVal + '"]').show();
+            }
+        });
+    </script>
 @endsection

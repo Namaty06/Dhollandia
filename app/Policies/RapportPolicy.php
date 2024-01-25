@@ -13,7 +13,7 @@ class RapportPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_rapports')) {
+        if ($user->hasRolePermission('naviguer_rapports')) {
             return true;
         } else {
             return false;
@@ -25,7 +25,7 @@ class RapportPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_rapports')) {
+        if ($user->hasRolePermission('ajouter_rapports')) {
             return true;
         } else {
             return false;
@@ -37,7 +37,7 @@ class RapportPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_rapports')) {
+        if ($user->hasRolePermission('modifier_rapports')) {
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ class RapportPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_rapports')) {
+        if ($user->hasRolePermission('supprimer_rapports')) {
             return true;
         } else {
             return false;
@@ -61,7 +61,7 @@ class RapportPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_rapports')) {
+        if ($user->hasRolePermission('restaurer_rapports')) {
             return true;
         } else {
             return false;

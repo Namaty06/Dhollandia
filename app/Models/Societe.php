@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Societe extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable =[
+    protected $fillable = [
         'logo',
         'societe',
         'responsable',
@@ -23,6 +23,16 @@ class Societe extends Model
     public function contrat()
     {
         return $this->hasMany(Contrat::class);
+    }
+
+    public function vehicule()
+    {
+        return $this->hasMany(Contrat::class);
+    }
+
+    public function contact()
+    {
+        return $this->hasMany(Contact::class);
     }
 
 }

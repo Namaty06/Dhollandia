@@ -20,7 +20,7 @@
                                             <td>{{ $type->id ?? null }}</td>
                                             <td>{{ $type->type ?? null }}</td>
 
-                                            @can('delete', App\Models\Vehicule::class)
+                                            @can('restore', App\Models\Configuration::class)
                                                 <td>
                                                     <form action="{{ route('TypeVehicule.restore', [$type->id]) }}"
                                                         method="post">

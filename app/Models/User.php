@@ -23,7 +23,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'telephone'
+        'telephone',
+        'fcm_token'
     ];
 
     /**
@@ -63,6 +64,11 @@ class User extends Authenticatable
     public function reclamation()
     {
         return $this->hasMany(Reclamation::class);
+    }
+    
+    public function observation()
+    {
+        return $this->hasMany(Observation::class);
     }
 
 }

@@ -12,12 +12,13 @@ class Contrat extends Model
 
     protected $fillable = [
         'societe_id',
-        'vehicule_id',
         'ref',
         'date_debut',
         'date_fin',
         'status_id',
-        'intervention_chaque'
+        'intervention_chaque',
+        'day',
+        'periode'
     ];
 
     public function status()
@@ -39,5 +40,11 @@ class Contrat extends Model
     {
         return $this->morphMany(Intervention::class, 'interventionable');
     }
+
+    public function vehicules()
+    {
+        return $this->belongsToMany(Vehicule::class,'vehicule_contrat');
+    }
+
 
 }

@@ -29,7 +29,7 @@
                                                     <form action="{{ route('User.restore', [$user->id]) }}" method="post">
                                                         @csrf
                                                         <button class="btn btn-sm btn-warning rounded-pill" type="submit">
-                                                            <i class="uil uil-trash fs-5"></i>
+                                                            Restaurer
                                                         </button>
                                                     </form>
                                             </td>

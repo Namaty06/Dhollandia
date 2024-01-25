@@ -25,6 +25,11 @@ class RoleController extends Controller
     }
 
 
+    public function create()
+    {
+        return view('role.create');
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,7 +49,21 @@ class RoleController extends Controller
                 $role->permission()->attach($permission->id);
             }
         }
-        return redirect()->back()->with('success','Mofifier avec Succés');
+        return redirect()->back()->with('success', 'Mofifier avec Succés');
+    }
+
+    public function add(Request $request)
+    {
+        $this->authorize('viewAny', Role::class);
+
+        $request->validate([
+            'role' => 'required|unique:roles,role'
+        ]);
+        Role::create([
+            'role' => $request->role
+        ]);
+
+        return redirect()->route('Role.index')->with('success', 'Créer avec Succés');
     }
 
 
@@ -97,21 +116,13 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $this->authorize('viewAny', Role::class);
 
-            $role = Role::whereId($id)->firstOrFail();
-            $role->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Successfuly'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        $this->authorize('viewAny', Role::class);
+
+        $role = Role::whereId($id)->firstOrFail();
+        $role->delete();
+
+        return redirect()->route('Role.index')->with('success', 'Supprimer avec Succés');
     }
     /**
      * List of deleted resources from storage.
@@ -119,17 +130,8 @@ class RoleController extends Controller
 
     public function deleted()
     {
-        try {
-            $this->authorize('viewAny', Role::class);
-
-            $roles = Role::onlyTrashed()->get();
-            return response()->json($roles);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        $roles = Role::onlyTrashed()->get();
+        return view('role.deleted', compact('roles'));
     }
     /**
      * Restore the specified resource from storage.
@@ -138,20 +140,11 @@ class RoleController extends Controller
      */
     public function restore($id)
     {
-        try {
-            $this->authorize('viewAny', Role::class);
 
-            $role = Role::withTrashed()->whereId($id)->firstOrFail();
-            $role->restore();
-            return response()->json([
-                'status' => true,
-                'message' => 'Successfuly'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        $this->authorize('viewAny', Role::class);
+
+        $role = Role::withTrashed()->whereId($id)->firstOrFail();
+        $role->restore();
+        return redirect()->route('Role.index')->with('success', 'Restaurer avec Succés');
     }
 }

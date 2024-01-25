@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_users')) {
+        if ($user->hasRolePermission('naviguer_utilisateurs')) {
             return true;
         } else {
             return false;
@@ -24,7 +24,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_users')) {
+        if ($user->hasRolePermission('ajouter_utilisateurs')) {
             return true;
         } else {
             return false;
@@ -36,7 +36,7 @@ class UserPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_users')) {
+        if ($user->hasRolePermission('modifier_utilisateurs')) {
             return true;
         } else {
             return false;
@@ -48,7 +48,7 @@ class UserPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_users')) {
+        if ($user->hasRolePermission('supprimer_utilisateurs')) {
             return true;
         } else {
             return false;
@@ -60,7 +60,7 @@ class UserPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_users')) {
+        if ($user->hasRolePermission('restaurer_utilisateurs')) {
             return true;
         } else {
             return false;

@@ -3,12 +3,13 @@
     <div class="row">
         <div class="page-title-box">
             <div class="page-title-left ">
-                <h2 class="text-dark mt-2 mx-2">Intervention</h2>
+                <h2 class="text-dark mt-2 mx-2">Intervention <span class="badge bg-success"> Corréctif </span> </h2>
             </div>
-            <div class="page-title-right ">
+            <div class="page-title-right mb-2">
                 <a href="{{ route('Document.create', $intervention->id) }}" class="mb-2 btn btn-outline-primary">Ajouter
                     Document</a>
             </div>
+
         </div>
     </div>
     <div class="row">
@@ -24,6 +25,7 @@
                                     <th>Vehicule</th>
                                     <th>Date</th>
                                     <th>Agent</th>
+                                    <th>Bon Travail</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -34,6 +36,7 @@
                                     <td>{{ $intervention->interventionable->vehicule->matricule ?? null }}</td>
                                     <td>{{ $intervention->date_intervention ?? null }}</td>
                                     <td>{{ $intervention->user->name ?? null }}</td>
+                                    <td>{{ $intervention->bon_travail ?? null }}</td>
                                     <td> <span class="badge bg-{{ $intervention->status->color }}">
                                             {{ $intervention->status->status ?? null }}</span></td>
                                 </tr>
@@ -103,9 +106,38 @@
                 </div>
             </div>
         </div>
-    </div>
-    @if ($intervention->status_id == 2)
-        <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-dark">Vehicule Transport</h3>
+                    <table class="table table-striped">
+                        <thead>
+
+                            <tr>
+                                <th>Vehicule</th>
+                                <th>Matricule</th>
+                                <th>N serie</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img style="height: 150px; width:150px"
+                                        src="{{ asset('storage/' . $reclamation->transport->image ?? null) }}"
+                                        class="img-thumbnail" alt=""></td>
+                                <td>{{ $reclamation->transport->matricule ?? null }}</td>
+                                <td>{{ $reclamation->transport->numero_serie ?? null }}</td>
+                                <td>{{ $reclamation->transport->typevehicule->type ?? null }}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if ($intervention->status_id == 2)
+
             <div class="col-md-6">
                 <div class="card">
                     <div class="">
@@ -129,7 +161,8 @@
                                     @foreach ($intervention->document as $doc)
                                         <li data-category="{{ $doc->typedocument->type ?? null }}"
                                             class="box container col-3 media {{ $doc->typedocument->type ?? null }} ">
-                                            <img src="{{ asset('storage/images/' . $doc->path) }}" alt="img"
+                                            <img data-original="{{ asset('storage/images/' . $doc->path) }}"
+                                                src="{{ asset('storage/images/' . $doc->path) }}" alt="img"
                                                 class="img-fluid m-1" srcset="">
                                             <div class="middle">
                                                 {{-- <a href="{{ route('Document.edit', $doc->id) }}"
@@ -173,15 +206,186 @@
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mb-2 mt-3">Pieces :</h4>
+
+                        <table class="table ">
+                            <thead>
+                                <tr>
+                                    <th>Libelle</th>
+                                    <th>Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($intervention->piece as $piece)
+                                    <tr>
+                                        <td>{{ $piece->piece }}</td>
+                                        <td>{{ $piece->qte }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
 
-    @endif
+        @endif
+    </div>
 @endsection
+
 @section('script')
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_KEY') }}&libraries=places&callback=initMap"
         async defer></script>
+    <script src="{{ asset('js/viewer.js') }}"></script>
     <script>
+        window.addEventListener('load', function() {
+            console.log('DOM fully loaded and parsed');
+            var galley = document.getElementById('galley');
+            var maxOffsetPercentage = 0.9;
+            var viewer = new Viewer(galley, {
+                url: 'data-original',
+                backdrop: 'static',
+                move: function(event) {
+                    var viewerData = viewer.viewerData;
+                    var imageData = viewer.imageData;
+                    var maxOffsetHorizontal = viewerData.width * maxOffsetPercentage;
+                    var maxOffsetVertical = viewerData.height * maxOffsetPercentage;
+                    var detail = event.detail;
+                    var left = detail.x;
+                    var top = detail.y;
+                    var right = viewerData.width - (left + imageData.width);
+                    var bottom = viewerData.height - (top + imageData.height);
+                    if (
+                        // Move left
+                        (detail.x < detail.oldX && right > 0 && right > maxOffsetHorizontal)
+                        // Move right
+                        ||
+                        (detail.x > detail.oldX && left > 0 && left > maxOffsetHorizontal)
+                        // Move up
+                        ||
+                        (detail.y < detail.oldY && bottom > 0 && bottom > maxOffsetVertical)
+                        // Move down
+                        ||
+                        (detail.y > detail.oldY && top > 0 && top > maxOffsetVertical)
+                    ) {
+                        event.preventDefault();
+                    }
+                },
+                zoomed: function(event) {
+                    var detail = event.detail;
+                    // Zoom out
+                    if (detail.ratio < detail.oldRatio) {
+                        var viewerData = viewer.viewerData;
+                        var imageData = viewer.imageData;
+                        var maxOffsetHorizontal = viewerData.width * maxOffsetPercentage;
+                        var maxOffsetVertical = viewerData.height * maxOffsetPercentage;
+                        var left = imageData.x;
+                        var top = imageData.y;
+                        var right = viewerData.width - (left + imageData.width);
+                        var bottom = viewerData.height - (top + imageData.height);
+                        var x = 0;
+                        var y = 0;
+                        if (right > 0 && right > maxOffsetHorizontal) {
+                            x = maxOffsetHorizontal - right;
+                        }
+                        if (left > 0 && left > maxOffsetHorizontal) {
+                            x = maxOffsetHorizontal - left;
+                        }
+
+                        if (bottom > 0 && bottom > maxOffsetVertical) {
+                            y = bottom - maxOffsetVertical;
+                        }
+
+                        if (top > 0 && top > maxOffsetVertical) {
+                            y = top - maxOffsetVertical;
+                        }
+
+                        // Move the image into view if it is invisible
+                        if (x !== 0 || y !== 0) {
+                            viewer.move(x, y);
+                        }
+                    }
+                },
+            });
+        });
+        var links = document.getElementsByClassName('link');
+        for (var i = 0; i < links.length; i++) {
+
+            links[i].addEventListener('click', function() {
+                console.log('clcl');
+                var galley = document.getElementById('galley');
+                var maxOffsetPercentage = 0.9;
+                var viewer = new Viewer(galley, {
+                    url: 'data-original',
+                    backdrop: 'static',
+                    move: function(event) {
+                        var viewerData = viewer.viewerData;
+                        var imageData = viewer.imageData;
+                        var maxOffsetHorizontal = viewerData.width * maxOffsetPercentage;
+                        var maxOffsetVertical = viewerData.height * maxOffsetPercentage;
+                        var detail = event.detail;
+                        var left = detail.x;
+                        var top = detail.y;
+                        var right = viewerData.width - (left + imageData.width);
+                        var bottom = viewerData.height - (top + imageData.height);
+                        if (
+                            // Move left
+                            (detail.x < detail.oldX && right > 0 && right > maxOffsetHorizontal)
+                            // Move right
+                            ||
+                            (detail.x > detail.oldX && left > 0 && left > maxOffsetHorizontal)
+                            // Move up
+                            ||
+                            (detail.y < detail.oldY && bottom > 0 && bottom > maxOffsetVertical)
+                            // Move down
+                            ||
+                            (detail.y > detail.oldY && top > 0 && top > maxOffsetVertical)
+                        ) {
+                            event.preventDefault();
+                        }
+                    },
+                    zoomed: function(event) {
+                        var detail = event.detail;
+                        // Zoom out
+                        if (detail.ratio < detail.oldRatio) {
+                            var viewerData = viewer.viewerData;
+                            var imageData = viewer.imageData;
+                            var maxOffsetHorizontal = viewerData.width * maxOffsetPercentage;
+                            var maxOffsetVertical = viewerData.height * maxOffsetPercentage;
+                            var left = imageData.x;
+                            var top = imageData.y;
+                            var right = viewerData.width - (left + imageData.width);
+                            var bottom = viewerData.height - (top + imageData.height);
+                            var x = 0;
+                            var y = 0;
+                            if (right > 0 && right > maxOffsetHorizontal) {
+                                x = maxOffsetHorizontal - right;
+                            }
+                            if (left > 0 && left > maxOffsetHorizontal) {
+                                x = maxOffsetHorizontal - left;
+                            }
+
+                            if (bottom > 0 && bottom > maxOffsetVertical) {
+                                y = bottom - maxOffsetVertical;
+                            }
+
+                            if (top > 0 && top > maxOffsetVertical) {
+                                y = top - maxOffsetVertical;
+                            }
+
+                            // Move the image into view if it is invisible
+                            if (x !== 0 || y !== 0) {
+                                viewer.move(x, y);
+                            }
+                        }
+                    },
+                });
+            });
+        }
         var $mediaElements = $('.media');
 
         $('.link').click(function(e) {
@@ -203,51 +407,48 @@
         let map;
 
         function initMap() {
-            map = new google.maps.Map(document.getElementById("map"), {
+            const map = new google.maps.Map(document.getElementById("map"), {
                 center: {
                     lat: 30.168831728404875,
                     lng: -7.46378273987113,
-                    zoom: 6
                 },
                 zoom: 6,
                 scrollwheel: true,
             });
 
             setMarkers(map);
-
         }
 
-        const locations = <?php print json_encode($intervention); ?>;
+        const locations = <?php echo json_encode($intervention); ?>;
         const image1 =
             "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1200px-User-avatar.svg.png";
 
         function setMarkers(map) {
-            const location = locations;
+                const marker = new google.maps.Marker({
+                    position: {
+                        lat: parseFloat(locations.lat),
+                        lng: parseFloat(locations.lng)
+                    },
+                    label: {
+                        color: 'blue',
+                        fontWeight: 'bold',
+                        text: locations.user.name,
+                    },
+                    icon: {
+                        url: image1,
+                        size: new google.maps.Size(36, 50),
+                        scaledSize: new google.maps.Size(36, 50),
+                        anchor: new google.maps.Point(18, 50),
+                        labelOrigin: new google.maps.Point(9, 8)
+                    },
+                    map: map,
+                    title: locations.user.name,
+                    zIndex: parseFloat(locations.lng),
+                });
 
-            new google.maps.Marker({
-                position: {
-                    lat: parseFloat(location.lat),
-                    lng: parseFloat(location.lng)
-                },
-                label: {
-                    color: 'blue',
-                    fontWeight: 'bold',
-                    text: location.user.name,
-                },
-                icon: {
-                    url: image1,
-                    size: new google.maps.Size(36, 50),
-                    scaledSize: new google.maps.Size(36, 50),
-                    anchor: new google.maps.Point(0, 50),
-                    labelOrigin: new google.maps.Point(9, 8)
+                // You can add additional information or event listeners to the marker if needed.
+                // For example: marker.addListener('click', () => { /* Your click event code */ });
 
-                },
-                map,
-                title: location,
-                zIndex: location.lng,
-            });
-
-            // console.log(locations[i]);
         }
     </script>
 @endsection

@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('css/icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/viewer.css') }}">
 
     @yield('style')
 
@@ -54,13 +55,17 @@
     <script src="{{ asset('js/vendor.js') }}"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     {{-- dataTables --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 
     <script src="{{ asset('js/dataTables.js/dataTables.js') }}"></script>
 
     {{-- editor --}}
 
     <script>
+        $(document).ready(function() {
+            // Initialize Select2 here
+            $('.select2-class').select2();
+        });
         $(document).ready(function() {
             var allTables = $('table.dataTable').DataTable();
             allTables.column(0).search('mySearchTerm').draw();

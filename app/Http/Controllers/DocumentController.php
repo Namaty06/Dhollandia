@@ -22,6 +22,7 @@ class DocumentController extends Controller
 
     public function store(Request $request, $id)
     {
+        $this->authorize('update', Intervention::class);
 
         $validator = Validator::make(
             $request->all(),

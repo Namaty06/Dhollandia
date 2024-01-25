@@ -72,6 +72,7 @@
                                         <th>Technicien</th>
                                         <th>Date validation</th>
                                         <th>Status</th>
+                                        <th>Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,6 +85,12 @@
                                                 class="badge bg-{{ $reclamation->interventions->status->color ?? null }}">
                                                 {{ $reclamation->interventions->status->status ?? null }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            <a class="rounded-pill text-primary"
+                                            href="{{ route('interv.show', $reclamation->interventions->id) }}">
+                                            <i class="uil uil-eye fs-4"></i>
+                                        </a>
                                         </td>
 
                                     </tr>

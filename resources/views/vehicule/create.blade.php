@@ -9,15 +9,21 @@
                         @csrf
 
                         <div class="form-group mb-1">
-                            <label for="numero_serie">Numero Serie *:</label>
-                            <input type="text" name="numero_serie" value="{{ old('numero_serie') }}" required
-                                class="form-control @error('numero_serie') is-invalid @enderror">
-                            @error('numero_serie')
+                            <label for="typevehicule">Client *:</label>
+                            <select class="form-select @error('societe') is-invalid @enderror" name="societe"
+                                id="societe">
+                                @foreach ($societes as $societe)
+                                    <option value="{{ $societe->id }}">{{ $societe->societe }}</option>
+                                @endforeach
+                            </select>
+                            @error('societe')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+
                         </div>
+
 
 
                         <div class="form-group mb-1">
@@ -30,37 +36,9 @@
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group mb-1">
-                            <label for="marque">Marque *:</label>
-                            <input type="marque" name="marque" value="{{ old('marque') }}" required
-                                class="form-control @error('marque') is-invalid @enderror">
-                            @error('marque')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
 
-                        <div class="form-group mb-1">
-                            <label for="dmc">DMC *:</label>
-                            <input type="date" name="dmc" value="{{ old('dmc') }}" required
-                                class="form-control @error('dmc') is-invalid @enderror">
-                            @error('dmc')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group mb-1">
-                            <label for="capacite">Capacite *:</label>
-                            <input type="number" name="capacite" value="{{ old('capacite') }}" required
-                                class="form-control @error('capacite') is-invalid @enderror">
-                            @error('capacite')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+
+
                         <div class="form-group mb-1">
                             <label for="typevehicule">Type *:</label>
                             <select class="form-select @error('typevehicule') is-invalid @enderror" name="typevehicule"
@@ -77,25 +55,19 @@
 
                         </div>
                         <div class="form-group mb-1">
-                            <label for="capacite">Image *:</label>
-                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
-                            @error('image')
+                            <label for="typevehicule">Ville *:</label>
+                            <select class="form-select @error('ville') is-invalid @enderror" name="ville" id="ville">
+                                @foreach ($villes as $ville)
+                                    <option value="{{ $ville->id }}">{{ $ville->ville }}</option>
+                                @endforeach
+                            </select>
+                            @error('ville')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
-                        <div class="form-group mb-1">
-                            <label for="capacite">Fichier PDF*:</label>
-                            <input type="file" name="pdf" class="form-control @error('pdf') is-invalid @enderror">
-                            @error('pdf')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
 
-
+                        </div>
 
                 </div>
                 <div class="modal-footer">

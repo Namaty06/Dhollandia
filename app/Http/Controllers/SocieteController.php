@@ -32,7 +32,10 @@ class SocieteController extends Controller
 
     public function show($id)
     {
+        $this->authorize('viewAny', Societe::class);
 
+        $societe = Societe::whereId($id)->with('contact')->first();
+        return view('societe.show', compact('societe'));
     }
 
 
@@ -70,7 +73,7 @@ class SocieteController extends Controller
             'societe' => $request->societe,
             'responsable' => $request->responsable,
             'adresse' => $request->adresse,
-            'tel' => $request->telephone,
+            'tel' => $request->tel,
             'email' => $request->email,
             'fix' => $request->fix,
             'logo' => $path,
@@ -83,6 +86,7 @@ class SocieteController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Societe::class);
 
         $societe = Societe::whereId($id)->first();
         return view('societe.edit', compact('societe'));
@@ -158,11 +162,10 @@ class SocieteController extends Controller
      */
     public function restore($id)
     {
-            $this->authorize('restore', Societe::class);
+        $this->authorize('restore', Societe::class);
 
-            $societe = Societe::withTrashed()->whereId($id)->firstOrFail();
-            $societe->restore();
-            return redirect()->route('Societe.index')->with('success', 'Sociéte Restaurer avec Succés');
-
+        $societe = Societe::withTrashed()->whereId($id)->firstOrFail();
+        $societe->restore();
+        return redirect()->route('Societe.index')->with('success', 'Sociéte Restaurer avec Succés');
     }
 }

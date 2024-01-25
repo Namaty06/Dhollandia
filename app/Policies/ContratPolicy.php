@@ -13,7 +13,7 @@ class ContratPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRolePermission('navigate_contrats')) {
+        if ($user->hasRolePermission('naviguer_contrats')) {
             return true;
         } else {
             return false;
@@ -25,7 +25,7 @@ class ContratPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRolePermission('add_contrats')) {
+        if ($user->hasRolePermission('ajouter_contrats')) {
             return true;
         } else {
             return false;
@@ -37,7 +37,7 @@ class ContratPolicy
      */
     public function update(User $user): bool
     {
-        if ($user->hasRolePermission('update_contrats')) {
+        if ($user->hasRolePermission('modifier_contrats')) {
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ class ContratPolicy
      */
     public function delete(User $user): bool
     {
-        if ($user->hasRolePermission('delete_contrats')) {
+        if ($user->hasRolePermission('supprimer_contrats')) {
             return true;
         } else {
             return false;
@@ -61,7 +61,7 @@ class ContratPolicy
      */
     public function restore(User $user): bool
     {
-        if ($user->hasRolePermission('restore_contrats')) {
+        if ($user->hasRolePermission('restaurer_contrats')) {
             return true;
         } else {
             return false;

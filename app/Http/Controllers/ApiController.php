@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
+use App\Models\Contrat;
 use App\Models\Document;
 use App\Models\Examen;
 use App\Models\Intervention;
+use App\Models\Piece;
 use App\Models\Rapport;
 use App\Models\Reclamation;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,14 +20,30 @@ use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
+
     public function intervention($year)
     {
-
         if (empty($year)) {
             $year = Carbon::now()->format('Y');
         }
-        $interventions = Intervention::whereYear('date_intervention', $year)->with('status', 'contrat.vehicule.typevehicule', 'contrat.societe', 'rapport')->get();
+        $interventions = Intervention::whereYear('date_intervention', $year)->whereHasMorph('interventionable', Contrat::class)->with('user','interventionable.societe','interventionable.vehicule','interventionable.status','typepanne')->get();
         return response()->json($interventions);
+    }
+
+    public function list()
+    {
+        try{
+            $intervs = Intervention::with('user','interventionable.societe','interventionable.vehicule','interventionable.status','typepanne')->latest()->get();
+
+            return response()->json($intervs);
+        }
+        catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
     }
 
     public function examens()
@@ -39,7 +59,7 @@ class ApiController extends Controller
             $request->validate([
                 'lat' => 'required|numeric',
                 'lng' => 'required|numeric',
-                // 'date'=>'required'
+                'bontravail'=>'required'
             ]);
 
 
@@ -51,7 +71,7 @@ class ApiController extends Controller
                 ], 401);
             }
 
-            //  $inter->status_id = 2;
+            $inter->status_id = 2;
             $inter->date_validation = now();
             $inter->lat = $request->lat;
             $inter->lng = $request->lng;
@@ -70,7 +90,7 @@ class ApiController extends Controller
                     $image = base64_decode($answer[2]);
                     $filename = time() . '.' . 'png';
                     Storage::put('public/images/' . $filename, $image);
-                    Document::create([
+                    $inter->document()->create([
                         'type_document_id' => 1,
                         'path' => $filename,
                         'intervention_id' => $inter->id
@@ -83,30 +103,39 @@ class ApiController extends Controller
                     ]);
                 }
             }
-            $inter->update();
+
 
             $rapport = Rapport::create([
+                'ref'=>'R'. date('m') . date('Y'),
                 'intervention_id' => $id,
             ]);
-
-            $rapport->ref = 'R' . $rapport->id . date('m') . date('Y');
-            $rapport->update();
             $pdf = Pdf::loadView('pdf', compact('inter', 'rapport'));
-
             $filename = time() . '.' . 'pdf';
             Storage::put('public/images/' . $filename, $pdf->output());
             $rapport->path = $filename;
             $rapport->update();
-            $path = "https://beta.msinvestsav.com/storage/images/1700836982.pdf";
-            Mail::send('mail', ['intervention' => $inter], function ($message) use ($inter, $path) {
-                $message->to("namaty06@gmail.com");
-                $message->subject("test");
-                $message->attach($path, [
-                    'as' => 'attachment.pdf', // Set the name of the attached file
-                    'mime' => 'application/pdf', // Set the MIME type of the attached file
-                ]);
-            });
-            return $pdf->download("pdf");
+            $inter->update();
+
+
+            $contacts = Contact::where('societe_id',$inter->interventionable->societe_id)->get();
+
+            foreach ($contacts as $contact) {
+
+                $path = "https://beta.msinvestsav.com/storage/images/1700836982.pdf";
+                Mail::send('mail', ['intervention' => $inter], function ($message) use ($inter,$contact, $path) {
+                    $message->to($contact->email);
+                    $message->subject("test");
+                    $message->attach($path, [
+                        'as' => 'attachment.pdf', // Set the name of the attached file
+                        'mime' => 'application/pdf', // Set the MIME type of the attached file
+                    ]);
+                });
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' =>"Succés"
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -115,6 +144,8 @@ class ApiController extends Controller
         }
     }
 
+
+
     public function updateRec(Request $request, $id)
     {
         try {
@@ -122,8 +153,8 @@ class ApiController extends Controller
             $request->validate([
                 'lat' => 'required|numeric',
                 'lng' => 'required|numeric',
+                'bontravail'=>'required'
             ]);
-
 
             $inter = Intervention::whereId($id)->firstOrFail();
             if ($inter->status_id != 1) {
@@ -140,7 +171,7 @@ class ApiController extends Controller
                     $filename = time() . '.' . 'png';
                     Storage::put('public/images/' . $filename, $image);
 
-                    Document::create([
+                    $inter->document()->create([
                         'type_document_id' => 1,
                         'path' => $filename,
                         'intervention_id' => $inter->id
@@ -157,7 +188,7 @@ class ApiController extends Controller
                 $ordre_mission = base64_decode($request->ordre_mission);
                 $filename = time() . '.' . 'png';
                 Storage::put('public/images/' . $filename, $ordre_mission);
-                Document::create([
+                $inter->document()->create([
                     'type_document_id' => 2,
                     'path' => $filename,
                     'intervention_id' => $inter->id
@@ -169,6 +200,15 @@ class ApiController extends Controller
                 ], 401);
             }
 
+            if ($request->has('pieces')) {
+                foreach($request->pieces as $piece){
+                    Piece::create([
+                        'intervention_id'=>$inter->id,
+                        'piece' => $piece['piece'], // Accessing 'piece' as an array element
+                        'qte' => $piece['qte'], 
+                    ]);
+                }
+            }
             $inter->date_validation = now();
             $inter->status_id = 2;
             $inter->lat = $request->lat;
@@ -181,6 +221,24 @@ class ApiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Success'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updatetoken(Request $request)
+    {
+        try {
+            $user = User::whereId(Auth::user()->id)->first();
+            $user->fcm_token = $request->token;
+            $user->update();
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

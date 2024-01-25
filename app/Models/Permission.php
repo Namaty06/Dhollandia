@@ -19,12 +19,10 @@ class Permission extends Model
 
     public static function generateFor($table_name )
     {
-        self::firstOrCreate(['permission' => 'navigate_'.$table_name]);
-        self::firstOrCreate(['permission' => 'update_'.$table_name]);
-        self::firstOrCreate(['permission' => 'add_'.$table_name]);
-        self::firstOrCreate(['permission' => 'delete_'.$table_name]);
-        self::firstOrCreate(['permission' => 'restore_'.$table_name]);
-
-
+        self::firstOrCreate(['permission' => 'naviguer_'.$table_name]);
+        self::firstOrCreate(['permission' => 'modifier_'.$table_name]);
+        self::firstOrCreate(['permission' => 'ajouter_'.$table_name]);
+        self::firstOrCreate(['permission' => 'supprimer_'.$table_name]);
+        self::firstOrCreate(['permission' => 'restaurer_'.$table_name]);
     }
 }
